@@ -1,0 +1,26 @@
+### Báo cáo đánh giá năng lực học viên
+
+#### 1. Tổng quan năng lực
+- **Năng lực cuối cùng (θ)**: 1.23
+- **Độ ổn định**: Năng lực của học viên được đánh giá thông qua việc trả lời đúng 4 câu hỏi trong bài thi mô phỏng. Với θ = 1.23, học viên đang ở mức năng lực khá, cho thấy khả năng giải quyết vấn đề toán học có thể đáp ứng được yêu cầu của bài thi SAT.
+- **So với trung bình**: Mức θ này cho thấy học viên đang ở trên mức trung bình của nhóm học viên tham gia thi SAT. Điều này cho thấy học viên có nền tảng vững chắc trong các khái niệm toán học cơ bản.
+
+#### 2. Kỹ năng mạnh và yếu
+- **Kỹ năng mạnh**:
+  - **Functions**: Học viên đã thể hiện khả năng tốt trong việc đánh giá hàm số, cụ thể là với bài toán f(x) = x² + 5x + 5. Điều này cho thấy sự hiểu biết về các hàm bậc hai.
+  - **Ratios & Percentage**: Học viên có khả năng tốt trong việc tính toán tỷ lệ và phần trăm, thể hiện qua việc tính toán giá trị mới sau khi tăng 25%.
+  - **Algebra: Systems of Equations**: Học viên đã giải quyết thành công 2 bài toán liên quan đến hệ phương trình, cho thấy khả năng làm việc với các phương trình đại số.
+
+- **Kỹ năng yếu**: Mặc dù học viên đã trả lời đúng tất cả các câu hỏi, nhưng không có thông tin cụ thể về các kỹ năng yếu. Tuy nhiên, việc tiếp tục luyện tập với các dạng bài khác nhau sẽ giúp củng cố và mở rộng kiến thức.
+
+#### 3. Gợi ý luyện tập / cải thiện
+- **Luyện tập thêm với các dạng bài khác nhau**: Học viên nên thử sức với nhiều dạng bài khác nhau trong các lĩnh vực như hình học, xác suất và thống kê để phát triển toàn diện hơn.
+- **Giải bài tập theo thời gian**: Thực hành làm bài thi trong thời gian quy định để cải thiện khả năng quản lý thời gian và tăng cường sự tự tin khi làm bài.
+- **Ôn tập lý thuyết**: Đảm bảo nắm vững các lý thuyết và công thức liên quan đến các chủ đề đã học, đặc biệt là các khái niệm liên quan đến đại số và hàm số.
+
+#### 4. Dự đoán mức SAT tương ứng
+- **Mức độ**: Intermediate
+- Với năng lực θ = 1.23 và việc giải quyết thành công tất cả các câu hỏi trong bài thi mô phỏng, học viên có khả năng đạt được điểm số trung bình đến cao trong kỳ thi SAT. Tuy nhiên, để đạt được mức độ Advanced, học viên cần tiếp tục rèn luyện và mở rộng kiến thức của mình.
+
+### Kết luận
+Học viên đã thể hiện năng lực tốt trong bài thi mô phỏng SAT. Việc duy trì và phát triển kỹ năng toán học thông qua luyện tập sẽ giúp học viên đạt được kết quả tốt hơn trong kỳ thi thực tế. Chúc học viên thành công trong quá trình ôn tập và thi cử!

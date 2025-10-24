@@ -1,0 +1,122 @@
+[
+    {
+        "id": 1,
+        "question": "Nếu 2x - 5 = -1 thì x = ?",
+        "choices": [
+            "1",
+            "0",
+            "2",
+            "4"
+        ],
+        "answer_index": 2,
+        "skill": "Algebra: Linear Equations"
+    },
+    {
+        "id": 2,
+        "question": "Nếu 8x - 12 = -52 thì x = ?",
+        "choices": [
+            "3",
+            "-13",
+            "-4",
+            "-5"
+        ],
+        "answer_index": 3,
+        "skill": "Algebra: Linear Equations"
+    },
+    {
+        "id": 3,
+        "question": "Cho f(x) = x² + 5x + 5. Tính f(-2).",
+        "choices": [
+            "-1",
+            "-3",
+            "4",
+            "0"
+        ],
+        "answer_index": 0,
+        "skill": "Functions: Quadratic Evaluation"
+    },
+    {
+        "id": 4,
+        "question": "Cho f(x) = x² + 5x + 5. Tính f(0).",
+        "choices": [
+            "10",
+            "4",
+            "5",
+            "6"
+        ],
+        "answer_index": 2,
+        "skill": "Functions: Quadratic Evaluation"
+    },
+    {
+        "id": 5,
+        "question": "Nếu 8x - 1 = -25 thì x = ?",
+        "choices": [
+            "-3",
+            "5",
+            "-2",
+            "-11"
+        ],
+        "answer_index": 0,
+        "skill": "Algebra: Linear Equations"
+    },
+    {
+        "id": 6,
+        "question": "Tỉ lệ A:B là 2:6. Nếu tổng là 30, thì phần của A bằng?",
+        "choices": [
+            "8",
+            "22",
+            "2",
+            "10"
+        ],
+        "answer_index": 0,
+        "skill": "Ratios & Proportions"
+    },
+    {
+        "id": 7,
+        "question": "Nếu 5x - 10 = 5 thì x = ?",
+        "choices": [
+            "-2",
+            "2",
+            "3",
+            "8"
+        ],
+        "answer_index": 2,
+        "skill": "Algebra: Linear Equations"
+    },
+    {
+        "id": 8,
+        "question": "Một giá trị giảm 10% từ 123. Giá trị mới xấp xỉ bằng bao nhiêu?",
+        "choices": [
+            "111",
+            "123",
+            "129",
+            "141"
+        ],
+        "answer_index": 0,
+        "skill": "Ratios & Percentage"
+    },
+    {
+        "id": 9,
+        "question": "Nếu 4x + 11 = 55 thì x = ?",
+        "choices": [
+            "7",
+            "8",
+            "11",
+            "15"
+        ],
+        "answer_index": 2,
+        "skill": "Algebra: Linear Equations"
+    },
+    {
+        "id": 10,
+        "question": "Tỉ lệ A:B là 3:8. Nếu tổng là 61, thì phần của A bằng?",
+        "choices": [
+            "44",
+            "20",
+            "9",
+            "17"
+        ],
+        "answer_index": 3,
+        "skill": "Ratios & Proportions"
+    }
+]
