@@ -1,91 +1,224 @@
+# sat_ai_system.py
 import os
+import time
+import math
+import logging
+from typing import List, Dict, Any, Tuple
+
 import sat_ai_core
 from explain_ai import explain_answer
 from ai_evaluator import evaluate_student_performance
 
-def run_sat_ai_simulation(max_steps=5):
-    """Mô phỏng hệ thống SAT-AI hoàn chỉnh (IRT + GPT giải thích + đánh giá)."""
-    theta = 0.0
-    asked = []
-    history = []
+logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s - %(message)s")
 
-    print("=== 🧠 BẮT ĐẦU MÔ PHỎNG SAT-AI ===\n")
 
-    for step in range(max_steps):
-        # 1️⃣ Chọn câu hỏi kế tiếp dựa trên năng lực hiện tại
-        item = sat_ai_core.select_next_item(theta, asked)
-        if not item:
+def _ensure_data_loaded() -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, float]]]:
+    """Đảm bảo có items và irt_params từ sat_ai_core hoặc fallback."""
+    items = getattr(sat_ai_core, "items", None)
+    irt_params = getattr(sat_ai_core, "irt_params", None)
+
+    if items is None or irt_params is None:
+        import json
+        with open("data/items.json", "r", encoding="utf-8") as f:
+            items = json.load(f)
+        with open("data/irt_params.json", "r", encoding="utf-8") as f:
+            params_data = json.load(f)
+            irt_params = {str(i["id"]): i for i in params_data}
+
+    return items, irt_params
+
+
+def run_sat_ai_simulation(
+    max_steps: int | None = None,
+    theta_convergence_eps: float = 0.01,
+    se_threshold: float = 0.25,
+    max_duration_minutes: float | None = None,
+) -> List[Dict[str, Any]]:
+
+    items, irt_params = _ensure_data_loaded()
+    total_available = len(items)
+
+    # ✅ Đặt ở đây: items đã tồn tại
+    all_skills = sorted({item.get("skill", "Unknown") for item in items})
+    print("\n📚 Các kỹ năng có trong ngân hàng câu hỏi:")
+    print(" - " + "\n - ".join(all_skills))
+
+    raw_skill = input("\n👉 Chọn kỹ năng muốn tập trung (Enter = tất cả): ").strip()
+    focus_skill = raw_skill if raw_skill in all_skills else None
+    print(f"🎯 Tập trung vào kỹ năng: {focus_skill or 'Tất cả'}")
+
+
+    items, irt_params = _ensure_data_loaded()
+    total_available = len(items)
+
+    # ===== (C) Hỏi người dùng chọn số câu =====
+    if max_steps is None:
+        print("\n🧠 SAT-AI Adaptive System (Gemini + IRT)")
+        print(f"📦 Ngân hàng câu hỏi hiện có: {total_available} câu.")
+        raw = input(f"👉 Nhập số câu muốn làm (Enter = {total_available}, hoặc 'all' = toàn bộ): ").strip().lower()
+        if raw in ("", "all"):
+            max_steps = total_available
+        else:
+            try:
+                n = int(raw)
+                if n <= 0:
+                    max_steps = total_available
+                else:
+                    max_steps = min(n, total_available)
+            except Exception:
+                max_steps = total_available
+
+    theta: float = 0.0
+    prev_theta: float = float("nan")
+    se: float = float("nan")
+    asked: List[str] = []
+    answered_pairs: List[Tuple[str, int]] = []
+    history: List[Dict[str, Any]] = []
+
+    print("\n🚀 BẮT ĐẦU BÀI THI THÍCH ỨNG\n")
+
+    start_time = time.time()
+    step = 0
+
+    # ===== Vòng lặp "không giới hạn cứng" (A) — dừng theo điều kiện =====
+    while True:
+        # Dừng nếu đạt số câu người dùng chọn (C)
+        if step >= max_steps:
+            print("⛳ Đã đạt số câu mong muốn.")
+            break
+
+        # Dừng nếu hết câu chưa hỏi (A)
+        if len(asked) >= total_available:
             print("✅ Hết câu hỏi trong ngân hàng!")
             break
 
-        asked.append(item["id"])
-        print(f"\n📘 Câu {step+1}: {item['question']}")
-        for i, c in enumerate(item["choices"]):
-            print(f"{i+1}. {c}")
+        # Dừng nếu quá thời gian (an toàn)
+        if max_duration_minutes is not None:
+            if (time.time() - start_time) / 60.0 > max_duration_minutes:
+                print("⏱️ Hết thời gian làm bài.")
+                break
 
-        # 2️⃣ Nhập câu trả lời
-        ans = input("Nhập đáp án (1–4 hoặc 'q' để thoát): ").strip()
-        if ans.lower() == "q":
-            print("🛑 Kết thúc sớm.")
+        # Chọn câu tối ưu theo Fisher Info
+        item = sat_ai_core.select_next_item(
+    theta=theta,
+    asked_ids=asked,
+    items=items,
+    irt_params=irt_params,
+    history=history,
+    focus_skill=focus_skill,
+    top_k=4,
+)
+
+
+        if not item:
+            print("✅ Không còn câu phù hợp để hỏi.")
+            break
+
+        step += 1
+        print(f"\n📘 Câu {step}: {item['question']}")
+        for idx, c in enumerate(item["choices"], 1):
+            print(f"  {idx}. {c}")
+
+        ans = input("→ Chọn đáp án (1-4 hoặc 'q' để thoát): ").lower().strip()
+        if ans == "q":
+            print("🛑 Kết thúc sớm theo yêu cầu.")
             break
 
         if not ans.isdigit() or not (1 <= int(ans) <= len(item["choices"])):
-            print("⚠️ Lựa chọn không hợp lệ, bỏ qua câu này.")
+            print("⚠️ Lựa chọn không hợp lệ. Câu này sẽ được bỏ qua.")
             continue
 
-        ans_index = int(ans) - 1
-        correct = ans_index == item["answer_index"]
-        print("✅ Chính xác!" if correct else "❌ Sai rồi!")
+        asked.append(str(item["id"]))
+        ans_idx = int(ans) - 1
+        correct = int(ans_idx == item["answer_index"])
+        print("✅ Chính xác!" if correct else "❌ Sai rồi.")
 
-        # 3️⃣ Cập nhật năng lực θ theo IRT
-        params = sat_ai_core.irt_params[str(item["id"])]
-        theta = sat_ai_core.update_theta(theta, int(correct),
-                                         params["a"], params["b"], params["c"])
+        answered_pairs.append((str(item["id"]), correct))
 
-        # 4️⃣ AI giải thích cách làm (sử dụng explain_ai.py)
+        # Cập nhật θ theo MAP (dùng toàn bộ lịch sử)
+        prev_theta = theta
+        theta, se = sat_ai_core.update_theta_map_once(theta, answered_pairs, irt_params)
+
+        # ===== (B) Dừng khi θ hội tụ
+        if math.isfinite(prev_theta) and abs(theta - prev_theta) < theta_convergence_eps:
+            print(f"🧲 Hội tụ θ: |Δθ| = {abs(theta - prev_theta):.4f} < {theta_convergence_eps}")
+            # vẫn tiếp tục kiểm tra SE bên dưới trước khi dừng — hoặc dừng ngay tuỳ bạn
+            # Ở đây: nếu đồng thời SE cũng nhỏ → dừng; nếu không thì cho làm thêm tới max_steps
+
+        # ===== Streaming giải thích (Gemini)
         correct_choice = item["choices"][item["answer_index"]]
-        explanation = explain_answer(item["question"], correct_choice)
-        print("\n💡 Giải thích của AI:")
-        print(explanation)
+        try:
+            explanation = explain_answer(item["question"], correct_choice)
+        except Exception as e:
+            explanation = f"⚠️ Lỗi AI: {e}"
 
-        # 5️⃣ Lưu lại lịch sử
+        print("\n💡 GIẢI THÍCH CỦA AI:\n")
+        print(explanation or "⚠️ Không có phản hồi từ AI.")
+
+        # Lưu lịch sử
         history.append({
             "id": item["id"],
             "question": item["question"],
-            "answered_correctly": correct,
+            "answered_correctly": bool(correct),
             "theta": theta,
-            "skill": item.get("skill", "Unknown")
+            "skill": item.get("skill", "Unknown"),
         })
 
-        print(f"\n🎯 Năng lực hiện tại (θ): {theta:.2f}")
+        # Hiển thị θ ± SE
+        if math.isfinite(se):
+            print(f"\n📈 θ hiện tại: {theta:.2f} ± {se:.2f}")
+        else:
+            print(f"\n📈 θ hiện tại: {theta:.2f}")
 
-    print("\n=== KẾT THÚC MÔ PHỎNG ===")
-    print(f"🎯 Năng lực cuối cùng (θ_final): {theta:.2f}")
+        # ===== (D) Dừng khi độ tin cậy cao (SE nhỏ)
+        if math.isfinite(se) and se < se_threshold:
+            print(f"🎯 Độ tin cậy cao: SE = {se:.3f} < {se_threshold}")
+            break
 
-    # 🔥 Gọi AI để đánh giá năng lực tổng hợp sau bài thi
+    # Kết thúc
+    print("\n🏁 KẾT THÚC BÀI THI")
+    if math.isfinite(se):
+        print(f"🎯 Năng lực cuối cùng θ = {theta:.2f} ± {se:.2f}")
+    else:
+        print(f"🎯 Năng lực cuối cùng θ = {theta:.2f}")
+
+    # Báo cáo tổng kết bằng Gemini
     if history:
         final_theta = history[-1]["theta"]
         print("\n📊 Đang tạo báo cáo đánh giá năng lực với AI...\n")
-        report = evaluate_student_performance(history, final_theta)
+        try:
+            report = evaluate_student_performance(history, final_theta)
+        except Exception as e:
+            report = f"⚠️ Lỗi khi đánh giá năng lực: {e}"
 
-        print("\n📘 BÁO CÁO ĐÁNH GIÁ NĂNG LỰC:\n")
-        print(report)
+        print("\n📘 BÁO CÁO NĂNG LỰC SAT:\n")
+        print(report or "⚠️ Không thể tạo báo cáo.")
 
-        # Lưu ra file
-        os.makedirs("results", exist_ok=True)
-        with open("results/evaluation_report.txt", "w", encoding="utf-8") as f:
-            f.write(report)
-        print("\n✅ Báo cáo đã được lưu trong results/evaluation_report.txt")
+        try:
+            os.makedirs("results", exist_ok=True)
+            with open("results/evaluation_report.txt", "w", encoding="utf-8") as f:
+                f.write(report or "")
+            print("\n✅ Báo cáo đã lưu tại: results/evaluation_report.txt")
+        except Exception as e:
+            print(f"⚠️ Không thể lưu báo cáo: {e}")
     else:
-        print("⚠️ Không có dữ liệu lịch sử để đánh giá.")
+        print("⚠️ Không có dữ liệu để đánh giá.")
 
     return history
 
 
+# ===== ENTRY =====
 if __name__ == "__main__":
-    if not os.getenv("OPENAI_API_KEY"):
-        print("⚠️ Thiếu biến môi trường OPENAI_API_KEY. Hãy đặt trước khi chạy.")
-        print("   Ví dụ: export OPENAI_API_KEY='sk-proj-...'\n")
-        exit(1)
+    if not os.getenv("GOOGLE_API_KEY"):
+        print("⚠️ Bạn cần set GOOGLE_API_KEY trước khi chạy.")
+        print("PowerShell:   $Env:GOOGLE_API_KEY=\"YOUR_KEY\"")
+        print("CMD:          set GOOGLE_API_KEY=YOUR_KEY")
+        raise SystemExit(1)
 
-    run_sat_ai_simulation(max_steps=5)
+    # Gọi không truyền max_steps để bật prompt lựa chọn (C)
+    run_sat_ai_simulation(
+        max_steps=None,             # → hỏi người dùng
+        theta_convergence_eps=0.01, # (B)
+        se_threshold=0.25,          # (D)
+        max_duration_minutes=None   # tuỳ chọn
+    )

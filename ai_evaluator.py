@@ -1,43 +1,124 @@
 import os
-import json
-from openai import OpenAI
+import time
+import logging
+from typing import List, Dict, Any, Optional
+from google import genai
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+# ✅ Logging
+logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s - %(message)s")
 
-def evaluate_student_performance(history, final_theta, model="gpt-4o-mini"):
-    """
-    Dùng AI để sinh bản đánh giá năng lực & kỹ năng làm bài dựa trên lịch sử thi.
-    history: list[dict] gồm {id, question, answered_correctly, theta, skill}
-    """
-    # Chuẩn bị dữ liệu tóm tắt gửi lên AI
-    summary_lines = []
+# ✅ Gemini Client
+api_key = os.getenv("GOOGLE_API_KEY")
+if not api_key:
+    raise ValueError("❌ GOOGLE_API_KEY chưa được set!")
+client = genai.Client(api_key=api_key)
+
+MODEL = "gemini-2.5-flash"
+
+# -----------------------
+# 🔹 Hàm phụ trợ
+# -----------------------
+def shorten_text(text: str, max_len: int = 160) -> str:
+    if not isinstance(text, str): return ""
+    t = " ".join(text.split())
+    return t if len(t) <= max_len else t[:max_len].rsplit(" ", 1)[0] + "…"
+
+
+def history_to_summary(history: List[Dict[str, Any]]) -> str:
+    lines = []
     for h in history:
-        result = "✅ đúng" if h["answered_correctly"] else "❌ sai"
-        summary_lines.append(f"- [{result}] {h['skill']} – {h['question']}")
-    summary_text = "\n".join(summary_lines)
+        result = "✅ đúng" if h.get("answered_correctly") else "❌ sai"
+        skill = h.get("skill", "Unknown")
+        question = shorten_text(h.get("question", ""))
+        lines.append(f"- [{result}] *{skill}*: {question}")
+    return "\n".join(lines)
 
-    prompt = f"""
-    Bạn là chuyên gia giáo dục SAT. Dựa trên kết quả mô phỏng sau, hãy viết báo cáo đánh giá năng lực học viên.
 
-    **Thông tin bài thi:**
-    - Năng lực cuối cùng θ = {final_theta:.2f}
-    - Số câu hỏi: {len(history)}
-    - Chi tiết từng câu:
-    {summary_text}
+# -----------------------
+# ✅ Retry cho Gemini
+# -----------------------
+def call_gemini_with_retry(prompt: str, *, temperature: float, max_tokens: int, retries: int = 3) -> Optional[str]:
 
-    Hãy xuất bản đánh giá gồm các phần:
-    1. Tổng quan năng lực (θ, độ ổn định, so với trung bình)
-    2. Kỹ năng mạnh và yếu (theo skill)
-    3. Gợi ý luyện tập / cải thiện
-    4. Dự đoán mức SAT tương ứng (ví dụ: Beginner / Intermediate / Advanced)
-    """
+    for attempt in range(1, retries + 1):
+        try:
+            start = time.time()
+            resp = client.models.generate_content(
+                model=MODEL,
+                contents=prompt
+            )
+            latency = time.time() - start
+
+            text = resp.text.strip()
+            token_est = len(text.split())
+
+            logging.info(f"✅ Gemini success (lat={latency:.2f}s, tokens≈{token_est})")
+            return text
+
+        except Exception as e:
+            wait = 2 ** attempt
+            logging.warning(f"⚠️ Retry {attempt}/{retries} after {wait}s: {e}")
+            time.sleep(wait)
+
+    logging.error("🚨 API FAILED")
+    return None
+
+
+# -----------------------
+# 🧠 Tạo báo cáo học lực học sinh
+# -----------------------
+def evaluate_student_performance(
+    history: List[Dict[str, Any]],
+    final_theta: float,
+    *,
+    language: str = "vi",
+    temperature: float = 0.4,
+    max_tokens: int = 800,
+) -> str:
+
+    if not history:
+        return "⚠️ Không có dữ liệu bài thi."
 
     try:
-        resp = client.chat.completions.create(
-            model=model,
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.4,
-        )
-        return resp.choices[0].message.content.strip()
-    except Exception as e:
-        return f"🚨 Lỗi khi gọi OpenAI API: {e}"
+        theta = round(float(final_theta), 2)
+    except Exception:
+        return "🚨 final_theta không hợp lệ!"
+
+    summary_text = history_to_summary(history)
+
+    system_prompt_vi = (
+        "Bạn là chuyên gia giáo dục SAT. Hãy tạo báo cáo bằng Markdown rõ ràng, gồm 4 phần:\n"
+        "1️⃣ Tổng quan năng lực\n"
+        "2️⃣ Kỹ năng mạnh/yếu\n"
+        "3️⃣ Gợi ý luyện tập 3–5 mục tiêu\n"
+        "4️⃣ Dự đoán mức SAT tương ứng (Beginner / Intermediate / Advanced)\n\n"
+        "Viết ngắn gọn, có bullet và tiêu đề phụ."
+    )
+
+    system_prompt_en = (
+        "You are an SAT education expert. Write a Markdown report with 4 sections:\n"
+        "1 Overview\n"
+        "2 Strengths & Weaknesses\n"
+        "3 Study Suggestions (3–5 bullets)\n"
+        "4 Predicted SAT Level (B/I/A)\n"
+        "Use clear bullets and sub-headings."
+    )
+
+    sys = system_prompt_vi if language == "vi" else system_prompt_en
+
+    full_prompt = f"""
+{sys}
+
+📊 **Thông tin bài thi**
+- Năng lực cuối cùng (θ): {theta}
+- Số câu hỏi: {len(history)}
+- Chi tiết từng câu:
+{summary_text}
+""".strip()
+
+    report = call_gemini_with_retry(
+        full_prompt,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+
+    return report or "🚨 Không thể tạo báo cáo sau retry. Thử lại sau."

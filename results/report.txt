@@ -1,0 +1,40 @@
+Chào bạn,
+
+Dưới đây là báo cáo đánh giá năng lực SAT dựa trên thông tin bài thi của bạn:
+
+---
+
+## Báo Cáo Đánh Giá Năng Lực SAT
+
+### 1️⃣ Tổng quan năng lực
+
+Dựa trên bài thi gồm 4 câu hỏi, bạn đã thể hiện năng lực tốt với việc trả lời đúng **100%** các câu hỏi được đưa ra. Điểm năng lực cuối cùng (θ) là 1.76, phản ánh sự thành thạo trong các chủ đề đã kiểm tra. Tuy nhiên, cần lưu ý rằng đây là một mẫu câu hỏi rất nhỏ (4 câu) nên kết quả này chủ yếu cho thấy bạn có nền tảng vững chắc ở các dạng toán cơ bản.
+
+### 2️⃣ Kỹ năng mạnh/yếu
+
+#### Kỹ năng mạnh:
+*   **Đánh giá hàm số (Functions):** Thành thạo trong việc tính toán giá trị của hàm số bậc hai tại một điểm cho trước (f(0)).
+*   **Tỷ lệ & Phần trăm (Ratios & Percentage):** Hiểu và áp dụng đúng cách tính giá trị sau khi tăng phần trăm.
+*   **Hệ phương trình (Algebra: Systems of Equations):** Giải quyết thành công các hệ phương trình tuyến tính hai ẩn cơ bản bằng phương pháp cộng hoặc trừ.
+
+#### Kỹ năng yếu:
+*   Dựa trên bài thi này, không có kỹ năng yếu cụ thể nào được xác định vì tất cả các câu hỏi đều được trả lời đúng.
+*   Tuy nhiên, do số lượng câu hỏi còn hạn chế và độ khó chưa cao, báo cáo này chưa thể đưa ra đánh giá toàn diện về các điểm cần cải thiện của bạn trên toàn bộ phổ kiến thức SAT Math.
+
+### 3️⃣ Gợi ý luyện tập 3–5 mục tiêu
+
+Để tiếp tục phát triển và chuẩn bị cho bài thi SAT, bạn nên tập trung vào các mục tiêu sau:
+
+1.  **Nâng cao độ khó các dạng đã làm:** Luyện tập các bài toán về hàm số, tỷ lệ phần trăm và hệ phương trình ở mức độ phức tạp hơn, có nhiều bước giải hoặc yêu cầu tư duy ứng dụng.
+2.  **Mở rộng sang các chủ đề Đại số khác:** Học và làm quen với các chủ đề như bất đẳng thức, đa thức, số mũ, căn bậc hai, giá trị tuyệt đối, và các bài toán lời văn có yếu tố đại số.
+3.  **Làm quen với Hình học và Phân tích Dữ liệu:** Đây là hai phần quan trọng trong bài thi SAT Math nhưng chưa được kiểm tra trong bài này. Hãy bắt đầu với các khái niệm cơ bản về đường thẳng, góc, hình phẳng, thể tích, xác suất, thống kê và biểu đồ.
+4.  **Thực hành với các đề thi SAT chuẩn:** Luyện tập với các đề thi mẫu chính thức của SAT để làm quen với cấu trúc, định dạng câu hỏi (trắc nghiệm, điền đáp án), thời gian làm bài và chiến lược cho phần Calculator/No-Calculator.
+5.  **Tăng cường số lượng câu hỏi luyện tập:** Giải nhiều bài tập từ nhiều nguồn khác nhau để củng cố kiến thức, phát hiện các lỗ hổng tiềm ẩn và nâng cao tốc độ làm bài.
+
+### 4️⃣ Dự đoán mức SAT tương ứng
+
+Dựa trên việc trả lời đúng 100% các câu hỏi cơ bản trong bài kiểm tra nhỏ này, bạn được đánh giá ở mức:
+
+*   **Beginner**
+
+**Giải thích:** Bạn có một nền tảng kiến thức toán học cơ bản vững chắc, là điểm khởi đầu rất tốt. Tuy nhiên, do số lượng câu hỏi ít và độ khó chưa cao, việc xếp hạng Beginner phản ánh rằng bạn đang ở giai đoạn đầu của quá trình luyện thi SAT, cần mở rộng kiến thức và làm quen với các dạng bài phức tạp hơn để đạt được các mức cao hơn.
