@@ -1,1 +1,55 @@
+# ==== Python ====
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.env
+.venv/
+env/
+venv/
+myenv/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# Logs & Databases
+*.log
+*.sqlite3
+*.db
+ai_cache.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter & notebooks
+.ipynb_checkpoints/
+
+# ==== Project specific ====
+# Generated / temporary files
+/results/
+data/*_generated.json
+data/irt_params_generated.json
+
+# Ignore evaluation reports
+results/*.txt
+
+# Ignore compiled artifacts
+*.pyo
+*.pyd
+*.so
+
+# ==== Misc ====
+# Ignore temporary backup or swap files
+*.swp
+*.bak
+*.tmp
+~$*
+
+# ==== Custom ====
+# If you want to commit .env.example but not real .env
 .env
