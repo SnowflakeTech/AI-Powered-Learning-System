@@ -1,63 +1,23 @@
-# Báo Cáo Năng Lực Bài Thi SAT Toán
+# Báo cáo Đánh giá Năng lực SAT
 
-**Dựa trên kết quả bài thi gồm 6 câu hỏi, đây là phân tích chi tiết về năng lực của bạn:**
+## 1️⃣ Tổng quan năng lực
+- **Trình độ (θ):** -0.31 cho thấy học sinh đang ở mức dưới trung bình.
+- **Độ ổn định:** Kết quả không ổn định, cần cải thiện để đạt được điểm cao hơn trong các bài thi SAT.
 
----
+## 2️⃣ Kỹ năng mạnh / yếu
+- **Kỹ năng mạnh:**
+  - **Algebra: Linear Equations:** Học sinh đã giải đúng bài toán này, cho thấy khả năng hiểu và áp dụng kiến thức về phương trình tuyến tính.
+  
+- **Kỹ năng yếu:**
+  - **Functions: Quadratic Evaluation:** Học sinh đã sai trong việc tính giá trị của hàm bậc hai, cho thấy cần cải thiện khả năng làm việc với các hàm số phức tạp hơn.
 
-### 1️⃣ Tổng quan năng lực
+## 3️⃣ Gợi ý luyện tập
+- **Ôn tập lý thuyết:** Nắm vững kiến thức về các loại hàm số, đặc biệt là hàm bậc hai.
+- **Giải bài tập:** Thực hành nhiều bài toán liên quan đến hàm số và phương trình để củng cố kỹ năng.
+- **Sử dụng tài liệu ôn tập:** Tìm kiếm sách hoặc tài liệu trực tuyến về SAT để luyện tập thêm.
+- **Tham gia nhóm học:** Học cùng bạn bè hoặc gia sư để trao đổi và giải quyết các vấn đề khó khăn.
+- **Giải đề thử:** Làm các đề thi thử để làm quen với định dạng và áp lực thời gian của SAT.
 
-*   **Năng lực cuối cùng (θ):** 1.54
-*   **Tổng số câu hỏi:** 6
-*   **Số câu trả lời đúng:** 5/6 (Tỷ lệ chính xác: 83.3%)
-
-**Đánh giá:** Bạn thể hiện khả năng giải quyết tốt các vấn đề toán học cơ bản và có độ chính xác cao trên các dạng bài đã được kiểm tra. Giá trị θ cao cho thấy năng lực tiềm tàng mạnh mẽ trong toán học.
-
----
-
-### 2️⃣ Kỹ năng mạnh/yếu
-
-#### 💪 Kỹ năng mạnh
-
-*   **Đại số: Hệ phương trình (Algebra: Systems of Equations):**
-    *   Hoàn thành chính xác 2/2 câu hỏi.
-    *   Thể hiện sự hiểu biết vững chắc về cách giải quyết các hệ phương trình tuyến tính cơ bản.
-*   **Hàm số: Đánh giá hàm bậc hai (Functions: Quadratic Evaluation):**
-    *   Hoàn thành chính xác 1/1 câu hỏi.
-    *   Cho thấy khả năng thay thế giá trị vào hàm số và tính toán chính xác.
-*   **Tỷ lệ & Phần trăm (Ratios & Percentage):**
-    *   Hoàn thành chính xác 2/3 câu hỏi.
-    *   Nắm vững việc tính toán giá trị mới khi có sự tăng/giảm phần trăm trong hầu hết các trường hợp.
-
-#### ⚠️ Kỹ năng cần cải thiện
-
-*   **Tỷ lệ & Phần trăm: Tính giá trị giảm phần trăm:**
-    *   Sai 1/3 câu liên quan đến "Một giá trị giảm 5% từ 214".
-    *   Mặc dù tổng thể kỹ năng về phần trăm là tốt, nhưng câu hỏi này cho thấy một lỗ hổng nhỏ hoặc lỗi bất cẩn trong tính toán giảm giá trị phần trăm cụ thể.
-
----
-
-### 3️⃣ Gợi ý luyện tập 3–5 mục tiêu
-
-Để tối ưu hóa sự chuẩn bị cho kỳ thi SAT Toán, bạn nên tập trung vào các mục tiêu sau:
-
-*   **1. Hoàn thiện kỹ năng Tỷ lệ & Phần trăm:**
-    *   Luyện tập sâu các bài toán tăng/giảm giá trị, chiết khấu, lãi suất, và các tình huống thực tế.
-    *   Chú ý đặc biệt đến việc tính toán chính xác trong mọi trường hợp.
-*   **2. Củng cố Đại số cơ bản (Hệ phương trình & Hàm số):**
-    *   Tiếp tục thực hành các dạng bài khó hơn trong hệ phương trình và các loại hàm số khác nhau (tuyến tính, bậc ba, hàm số mũ đơn giản).
-    *   Đảm bảo sự vững chắc và khả năng xử lý các bài toán phức tạp hơn.
-*   **3. Mở rộng sang các chủ đề Toán SAT khác:**
-    *   Bắt đầu làm quen và luyện tập các chủ đề phổ biến khác trong SAT như Hình học (diện tích, chu vi, thể tích, định lý Pytago), Thống kê (trung bình, trung vị, mốt), Xác suất.
-    *   Điều này giúp xây dựng một nền tảng kiến thức toàn diện.
-*   **4. Tăng cường độ chính xác và tốc độ:**
-    *   Thực hiện các bài tập có giới hạn thời gian để rèn luyện sự tập trung, quản lý thời gian hiệu quả và giảm thiểu lỗi do bất cẩn.
-
----
-
-### 4️⃣ Dự đoán mức SAT tương ứng
-
-Dựa trên hiệu suất cao (5/6 câu đúng) trên các câu hỏi nền tảng và giá trị năng lực (θ) 1.54, cùng với một điểm cần cải thiện nhỏ trong Tỷ lệ & Phần trăm:
-
-*   **Mức độ:** **Intermediate (Trung bình)**
-
-**Giải thích:** Bạn có nền tảng vững chắc về các khái niệm cơ bản của toán học SAT. Để đạt mức "Advanced", bạn cần mở rộng kiến thức sang các chủ đề nâng cao hơn, củng cố những điểm yếu nhỏ, và liên tục luyện tập để đạt được độ chính xác tuyệt đối và tốc độ giải quyết vấn đề. Hiệu suất của bạn cho thấy tiềm năng rất lớn để tiến bộ nhanh chóng.
+## 4️⃣ Dự đoán cấp độ SAT
+- **Cấp độ:** Beginner
+- Học sinh cần cải thiện kỹ năng và kiến thức để tiến tới cấp độ Intermediate.
