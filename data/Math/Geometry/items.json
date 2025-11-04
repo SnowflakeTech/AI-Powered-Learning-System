@@ -1,0 +1,213 @@
+[
+  {
+    "id": "9f5f0b23-ccb9-4835-83a7-5c21d860f62e",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một tam giác vuông, nếu cạnh huyền có độ dài $c$ và một cạnh góc vuông có độ dài $a$, thì cạnh còn lại có độ dài là bao nhiêu?",
+    "choices": [
+      "A $\\sqrt{c^2 - a^2}$",
+      "B $\\sqrt{a^2 - c^2}$",
+      "C $\\frac{c}{a}$",
+      "D $\\frac{a}{c}$"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium",
+    "created_at": "2025-11-04T10:47:38.345826",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "d0aef264a10b"
+  },
+  {
+    "id": "023006e2-23da-43b1-badb-eea08f901c3a",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài bằng $10$ cm và chiều rộng bằng $6$ cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A) 16 cm²",
+      "B) 60 cm²",
+      "C) 66 cm²",
+      "D) 100 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium",
+    "created_at": "2025-11-04T10:47:41.600607",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "d0253530865d"
+  },
+  {
+    "id": "f57e63d1-5391-4d5a-984a-8f114bd42b26",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một tam giác đều với độ dài cạnh là $a$, chu vi của tam giác này là bao nhiêu?",
+    "choices": [
+      "A) $3a$",
+      "B) $a^2$",
+      "C) $2a$",
+      "D) $a + 3$"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium",
+    "created_at": "2025-11-04T10:48:09.159206",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "6148b1db3309"
+  },
+  {
+    "id": "50377be6-55ab-4fc5-814f-4658d3cbb559",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài là $10$ cm và chiều rộng là $6$ cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A 60 cm²",
+      "B 66 cm²",
+      "C 70 cm²",
+      "D 76 cm²"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium",
+    "created_at": "2025-11-04T10:48:32.022020",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "06ed6457ac88"
+  },
+  {
+    "id": "b199849e-f2b1-4739-ab93-58d7d204da8b",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một hình chữ nhật, chiều dài là $10$ cm và chiều rộng là $6$ cm. Tính diện tích của hình chữ nhật.",
+    "choices": [
+      "A 16 cm²",
+      "B 60 cm²",
+      "C 66 cm²",
+      "D 100 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium",
+    "created_at": "2025-11-04T10:48:55.698854",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "3e37c3963019"
+  },
+  {
+    "id": "175272a5-c7f2-4b39-bae3-a44dc2759615",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một hình chữ nhật, nếu chiều dài của hình chữ nhật là $l$ và chiều rộng là $w$, thì độ dài của đường chéo $d$ là bao nhiêu?",
+    "choices": [
+      "A $\\sqrt{l^2 + w^2}$",
+      "B $l + w$",
+      "C $\\frac{l}{w}$",
+      "D $l - w$"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium"
+  },
+  {
+    "id": "b75b6d92-c7d5-4cc6-b3ce-8bb1f5b7bdc2",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài là $8$ cm và chiều rộng là $5$ cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A) 30 cm²",
+      "B) 40 cm²",
+      "C) 50 cm²",
+      "D) 45 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": "e5dcce1f-171c-4dd8-950f-59a1bbf9f2b0",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài là $12$ cm và chiều rộng là $5$ cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A) 50 cm²",
+      "B) 60 cm²",
+      "C) 70 cm²",
+      "D) 80 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": "40e76e1f-42ae-4218-ae9d-f5d0998b0fe8",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình vuông có độ dài cạnh là $b$. Tính chu vi của hình vuông này.",
+    "choices": [
+      "A) $4b$",
+      "B) $2b$",
+      "C) $b^2$",
+      "D) $8b$"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium"
+  },
+  {
+    "id": "a1cc3446-1627-4b79-a276-c8caf0ccfec3",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một hình vuông có độ dài cạnh là $b$, chu vi của hình vuông này là bao nhiêu?",
+    "choices": [
+      "A) $4b$",
+      "B) $2b$",
+      "C) $5b$",
+      "D) $3b$"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium"
+  },
+  {
+    "id": "354bf1dc-db25-4a47-956c-c50de22f05b0",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài là 12 cm và chiều rộng là 5 cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A 60 cm²",
+      "B 50 cm²",
+      "C 70 cm²",
+      "D 80 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": "d686594d-abba-4de0-a60a-d08ff7f62d78",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Một hình chữ nhật có chiều dài là 12 cm và chiều rộng là 5 cm. Tính diện tích của hình chữ nhật này.",
+    "choices": [
+      "A 60 cm²",
+      "B 55 cm²",
+      "C 70 cm²",
+      "D 50 cm²"
+    ],
+    "answer_index": 0,
+    "difficulty": "medium"
+  },
+  {
+    "id": "d42cd3e8-78c4-49f2-b11d-68730fc05a4e",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một hình chữ nhật, chiều dài là $12$ cm và chiều rộng là $5$ cm. Tính diện tích của hình chữ nhật.",
+    "choices": [
+      "A 50 cm²",
+      "B 60 cm²",
+      "C 70 cm²",
+      "D 80 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium"
+  },
+  {
+    "id": "5810c670-da5b-48ad-a463-c81fc70134c8",
+    "section": "Math",
+    "skill": "Geometry",
+    "question": "Trong một hình chữ nhật, chiều dài là 12 cm và chiều rộng là 5 cm. Tính diện tích của hình chữ nhật.",
+    "choices": [
+      "A 50 cm²",
+      "B 60 cm²",
+      "C 70 cm²",
+      "D 80 cm²"
+    ],
+    "answer_index": 1,
+    "difficulty": "medium"
+  }
+]

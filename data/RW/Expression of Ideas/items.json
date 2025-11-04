@@ -1,0 +1,56 @@
+[
+  {
+    "id": "9502422d-75f9-4aee-8539-d6495678d58c",
+    "section": "RW",
+    "skill": "Expression of Ideas",
+    "passage": "In the realm of modern art, many artists strive to break free from traditional techniques. This exploration often leads to innovative forms of expression, challenging viewers' perceptions. However, some critics argue that this departure can result in works that lack depth or meaning, ultimately raising questions about the value of such art in contemporary society.",
+    "question": "Which choice best enhances the clarity of the passage?",
+    "choices": [
+      "A) No change",
+      "B) This exploration frequently results in new artistic movements.",
+      "C) This exploration sometimes leads to chaotic forms of expression.",
+      "D) This exploration can lead to controversial interpretations."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:06:34.109359",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "181413c7b9b5"
+  },
+  {
+    "id": "645f5463-64ee-4322-b11e-e3aae49b6edb",
+    "section": "RW",
+    "skill": "Expression of Ideas",
+    "passage": "In the heart of the city lies a park that serves as a sanctuary for both nature and urban dwellers. Visitors can immerse themselves in lush greenery, vibrant flowers, and the soothing sounds of birdsong, creating a refreshing contrast to the hustle and bustle of city life. This green space not only promotes relaxation but also encourages community interaction and appreciation for the environment.",
+    "question": "Which of the following revisions best maintains the original meaning of the passage while improving its clarity?",
+    "choices": [
+      "A. Visitors can enjoy the greenery, flowers, and birdsong, offering a refreshing escape from the city.",
+      "B. The park, which is in the city, serves a purpose for both nature and urban dwellers.",
+      "C. Visitors can find lush greenery, vibrant flowers, and soothing sounds, creating a contrast to urban life.",
+      "D. This green space promotes relaxation and encourages interaction among community members."
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:06:39.500819",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "e1e4b38eb668"
+  },
+  {
+    "id": "f9cbc9c8-d846-4f30-99e8-eaf8ef345e5d",
+    "section": "RW",
+    "skill": "Expression of Ideas",
+    "passage": "Dù là một cơn bão lớn hay chỉ là một cơn mưa nhỏ, thời tiết có thể ảnh hưởng sâu sắc đến tâm trạng của con người. Nhiều nghiên cứu chỉ ra rằng ánh nắng mặt trời có thể thúc đẩy cảm giác hạnh phúc, trong khi những ngày âm u lại dễ khiến mọi người cảm thấy uể oải và chán nản.",
+    "question": "Which of the following would best improve the clarity of the passage?",
+    "choices": [
+      "A. Add a statistic about seasonal affective disorder.",
+      "B. Remove the phrase 'Dù là một cơn bão lớn hay chỉ là một cơn mưa nhỏ.'",
+      "C. Include a personal anecdote about a rainy day.",
+      "D. Replace 'thời tiết' with 'khí hậu' to broaden the context."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:07:05.671872",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "9a7ca27db1ee"
+  }
+]

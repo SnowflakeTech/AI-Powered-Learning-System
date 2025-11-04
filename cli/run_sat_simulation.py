@@ -1,244 +1,177 @@
-"""
-cli/run_sat_simulation.py
------------------------------------
-Chạy bài thi thích ứng SAT AI (Adaptive Test) trên CLI.
-Kết hợp các module:
-- sat_ai_core.question_selector
-- sat_ai_core.irt_core
-- sat_ai_core.ai_explainer
-- sat_ai_core.ai_evaluator
-"""
-
 import os
-import sys
-import math
 import time
+import math
+import json
 import logging
-from typing import List, Dict, Any, Tuple
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 from dotenv import load_dotenv
+from typing import List, Dict, Any, Tuple
+from sat_ai_core import irt_core, question_selector, ai_explainer, ai_evaluator
 
-# ===== Load .env từ thư mục gốc =====
+RESET = "\033[0m"
+BOLD = "\033[1m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RED = "\033[91m"
+CYAN = "\033[96m"
+MAGENTA = "\033[95m"
+BLUE = "\033[94m"
+
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
-
-# ===== Logging =====
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s - %(message)s")
 
-# ===== Import nội bộ =====
-if __package__ is None or __package__ == "":
-    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-    from sat_ai_core import irt_core, question_selector, ai_explainer, ai_evaluator
-else:
-    from sat_ai_core import irt_core, question_selector, ai_explainer, ai_evaluator
-
-
-# ==============================
-# 🧩 Tải dữ liệu items & params
-# ==============================
-def load_data() -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, float]]]:
-    """Đọc items.json và irt_params.json."""
-    import json
-    try:
-        with open("data/items.json", "r", encoding="utf-8") as f:
-            items = json.load(f)
-        with open("data/irt_params.json", "r", encoding="utf-8") as f:
-            params_data = json.load(f)
-            irt_params = {str(i["id"]): i for i in params_data}
-        return items, irt_params
-    except Exception as e:
-        logging.error(f"🚨 Lỗi khi đọc dữ liệu: {e}")
-        return [], {}
-
-
-# ==============================
-# 🧠 Giao diện chọn kỹ năng
-# ==============================
-def choose_skill(items: List[Dict[str, Any]]) -> str | None:
-    """Hiển thị danh sách kỹ năng và cho phép chọn bằng số hoặc tên."""
-    all_skills = sorted({item.get("skill", "Unknown") for item in items})
-    print("\n📚 Các kỹ năng có trong ngân hàng câu hỏi:\n")
-    for i, skill in enumerate(all_skills, 1):
-        print(f"  {i}. {skill}")
-
-    raw_input_skill = input("\n👉 Chọn kỹ năng muốn tập trung (Enter = tất cả): ").strip()
-
-    if raw_input_skill == "":
-        focus_skill = None
-    elif raw_input_skill.isdigit() and 1 <= int(raw_input_skill) <= len(all_skills):
-        focus_skill = all_skills[int(raw_input_skill) - 1]
-    elif raw_input_skill in all_skills:
-        focus_skill = raw_input_skill
-    else:
-        print("⚠️ Lựa chọn không hợp lệ, mặc định: Tất cả.")
-        focus_skill = None
-
-    print(f"\n🎯 Tập trung vào kỹ năng: {focus_skill or 'Tất cả'}")
-    return focus_skill
-
-
-# ==============================
-# 🚀 Chạy bài thi thích ứng
-# ==============================
-def run_sat_demo(
-    max_steps: int | None = None,
-    theta_convergence_eps: float = 0.01,
-    se_threshold: float = 0.25,
-    max_duration_minutes: float | None = None,
-):
-    """Chạy bài thi thích ứng trên CLI."""
-    items, irt_params = load_data()
+def load_all_data(base_dir="data") -> Tuple[List[Dict[str, Any]], Dict[str, Dict[str, float]]]:
+    items, irt_params = [], {}
+    for root, _, files in os.walk(base_dir):
+        if "items.json" in files and "irt_params.json" in files:
+            try:
+                with open(os.path.join(root, "items.json"), "r", encoding="utf-8") as f:
+                    loaded_items = json.load(f)
+                    for it in loaded_items:
+                        section = os.path.basename(os.path.dirname(root))
+                        skill = os.path.basename(root)
+                        it["section"] = section
+                        it["skill"] = it.get("skill", skill)
+                    items.extend(loaded_items)
+                with open(os.path.join(root, "irt_params.json"), "r", encoding="utf-8") as f:
+                    params = json.load(f)
+                    for p in params:
+                        irt_params[str(p["id"])] = p
+                logging.info(f"Loaded {len(loaded_items)} items from {root}")
+            except Exception as e:
+                logging.warning(f"Cannot read {root}: {e}")
     if not items:
-        print("⚠️ Không tìm thấy dữ liệu câu hỏi.")
+        logging.warning("No nested data found, fallback to old data/items.json")
+        try:
+            with open("data/items.json", "r", encoding="utf-8") as f:
+                items = json.load(f)
+            with open("data/irt_params.json", "r", encoding="utf-8") as f:
+                params = json.load(f)
+                irt_params = {str(p['id']): p for p in params}
+        except Exception as e:
+            logging.error(f"Failed fallback: {e}")
+    return items, irt_params
+
+def determine_section_from_skill(skill: str) -> str:
+    rw_skills = ["Vocabulary", "Information & Ideas", "Craft & Structure",
+                 "Expression of Ideas", "Standard English Conventions"]
+    return "RW" if skill in rw_skills else "Math"
+
+def run_sat_demo():
+    items, irt_params = load_all_data()
+    if not items:
+        print(f"{RED}Khong tim thay du lieu cau hoi!{RESET}")
         return
 
-    total_available = len(items)
-    print(f"\n🧠 Ngân hàng câu hỏi: {total_available} câu.")
+    all_skills = sorted({item.get("skill", "Unknown") for item in items})
+    print(f"\n{BOLD}{CYAN}He thong co {len(items)} cau hoi tu {len(all_skills)} ky nang.{RESET}\n")
+    print(f"{MAGENTA}Cac ky nang kha dung:{RESET}")
+    for i, sk in enumerate(all_skills, 1):
+        print(f"  {CYAN}{i}.{RESET} {sk}")
 
-    # --- Chọn kỹ năng ---
-    focus_skill = choose_skill(items)
+    raw = input(f"\nChon ky nang muon tap trung (Enter = tat ca): ").strip()
+    focus_skill = None
+    if raw:
+        if raw.isdigit() and 1 <= int(raw) <= len(all_skills):
+            focus_skill = all_skills[int(raw) - 1]
+        elif raw in all_skills:
+            focus_skill = raw
+        else:
+            print(f"{YELLOW}Khong hop le, dung tat ca ky nang.{RESET}")
 
-    # --- Chọn số câu ---
-    if max_steps is None:
-        try:
-            raw = input(f"\n🧩 Nhập số câu muốn làm (Enter = 5, max {total_available}): ").strip()
-            if raw in ("", "all"):
-                max_steps = min(5, total_available)
-            else:
-                n = int(raw)
-                max_steps = max(1, min(n, total_available))
-        except Exception:
-            max_steps = 5
+    print(f"\nKy nang dang tap trung: {focus_skill or 'Tat ca'}")
 
-    # --- Biến trạng thái ---
+    if focus_skill:
+        section = determine_section_from_skill(focus_skill)
+        items = [it for it in items if it.get("section") == section]
+        filtered = [it for it in items if focus_skill.lower() in it.get("skill", '').lower()]
+        if filtered:
+            items = filtered
+            print(f"{GREEN}Da loc {len(filtered)} cau hoi cho ky nang {focus_skill}.{RESET}")
+        else:
+            print(f"{YELLOW}Khong co cau hoi phu hop, dung tat ca trong Section {section}.{RESET}")
+
+    if not items:
+        print(f"{RED}Khong co cau hoi phu hop!{RESET}")
+        return
+
+    try:
+        n = int(input(f"\nNhap so cau muon lam (Enter = 5, max {len(items)}): ").strip() or 5)
+        n = min(n, len(items))
+    except ValueError:
+        n = 5
+
+    print(f"\n{BOLD}{CYAN}BAT DAU BAI THI THICH UNG{RESET}\n")
+
     theta = 0.0
-    prev_theta = float("nan")
-    se = float("nan")
-    asked: List[str] = []
-    answered_pairs: List[Tuple[str, int]] = []
-    history: List[Dict[str, Any]] = []
-
-    print("\n🚀 BẮT ĐẦU BÀI THI THÍCH ỨNG\n")
+    asked, answered, history = [], [], []
     start_time = time.time()
-    step = 0
 
-    # --- Vòng lặp chính ---
-    while True:
-        if step >= max_steps:
-            print("⛳ Đã đạt số câu mong muốn.")
-            break
-
-        if len(asked) >= total_available:
-            print("✅ Hết câu hỏi trong ngân hàng!")
-            break
-
-        if max_duration_minutes and (time.time() - start_time) / 60 > max_duration_minutes:
-            print("⏱️ Hết thời gian làm bài.")
-            break
-
-        # Chọn câu tiếp theo
-        item = question_selector.select_next_item(
-            theta=theta,
-            asked_ids=asked,
-            items=items,
-            irt_params=irt_params,
-            history=history,
-            focus_skill=focus_skill,
-            top_k=4,
-        )
-
+    for step in range(1, n + 1):
+        item = question_selector.select_next_item(theta, asked, items, irt_params,
+                                                  history=history, focus_skill=focus_skill, top_k=4)
         if not item:
-            print("✅ Không còn câu hỏi phù hợp.")
+            print(f"{YELLOW}Het cau hoi phu hop.{RESET}")
             break
 
-        step += 1
-        print(f"\n📘 Câu {step}: {item['question']}")
-        for idx, c in enumerate(item["choices"], 1):
-            print(f"  {idx}. {c}")
+        print(f"\n{BLUE}Cau {step}:{RESET} {item['question']}")
+        for i, choice in enumerate(item["choices"], 1):
+            print(f"  {i}. {choice}")
 
-        ans = input("→ Chọn đáp án (1–4 hoặc 'q' để thoát): ").strip().lower()
+        ans = input("Chon dap an (1–4 hoac q de thoat): ").strip().lower()
         if ans == "q":
-            print("🛑 Dừng bài thi theo yêu cầu.")
+            print(f"{RED}Ket thuc som.{RESET}")
             break
-
-        if not ans.isdigit() or not (1 <= int(ans) <= len(item["choices"])):
-            print("⚠️ Lựa chọn không hợp lệ. Bỏ qua câu này.")
+        if not ans.isdigit() or not (1 <= int(ans) <= 4):
+            print(f"{YELLOW}Lua chon khong hop le.{RESET}")
             continue
 
-        asked.append(str(item["id"]))
         ans_idx = int(ans) - 1
         correct = int(ans_idx == item["answer_index"])
-        print("✅ Chính xác!" if correct else "❌ Sai rồi.")
+        print(f"{GREEN}Dung!{RESET}" if correct else f"{RED}Sai.{RESET}")
 
-        answered_pairs.append((str(item["id"]), correct))
+        asked.append(str(item["id"]))
+        answered.append((str(item["id"]), correct))
+        theta, se = irt_core.update_theta_map(theta, answered, irt_params)
 
-        # Cập nhật θ
-        prev_theta = theta
-        theta, se = irt_core.update_theta_map_once(theta, answered_pairs, irt_params)
-
-        # Giải thích bằng AI
-        correct_choice = item["choices"][item["answer_index"]]
         try:
+            correct_choice = item["choices"][item["answer_index"]]
             explanation = ai_explainer.explain_answer(item["question"], correct_choice)
         except Exception as e:
-            explanation = f"⚠️ Lỗi AI: {e}"
+            explanation = f"{YELLOW}Loi AI: {e}{RESET}"
 
-        print("\n💡 GIẢI THÍCH CỦA AI:\n")
-        print(explanation or "⚠️ Không có phản hồi từ AI.")
+        print(f"\n{MAGENTA}Giai thich AI:{RESET}\n{explanation}")
+        print(f"{CYAN}Theta hien tai: {theta:.2f} ± {se:.2f}{RESET}")
 
-        # Lưu lịch sử
         history.append({
             "id": item["id"],
             "question": item["question"],
             "answered_correctly": bool(correct),
             "theta": theta,
             "skill": item.get("skill", "Unknown"),
+            "section": item.get("section", "Unknown"),
         })
 
-        # Hiển thị θ ± SE
-        if math.isfinite(se):
-            print(f"\n📈 θ hiện tại: {theta:.2f} ± {se:.2f}")
-        else:
-            print(f"\n📈 θ hiện tại: {theta:.2f}")
-
-        # Kiểm tra dừng theo SE
-        if math.isfinite(se) and se < se_threshold:
-            print(f"🎯 Độ tin cậy cao: SE = {se:.3f} < {se_threshold}")
+        if math.isfinite(se) and se < 0.25:
+            print(f"{GREEN}Do tin cay cao (SE = {se:.3f}){RESET}")
             break
 
-    # --- Kết thúc ---
-    print("\n🏁 KẾT THÚC BÀI THI")
-    if math.isfinite(se):
-        print(f"🎯 Năng lực cuối cùng θ = {theta:.2f} ± {se:.2f}")
-    else:
-        print(f"🎯 Năng lực cuối cùng θ = {theta:.2f}")
+    print(f"\n{BOLD}{CYAN}KET THUC BAI THI{RESET}")
+    print(f"Ket qua cuoi: Theta = {theta:.2f}\n")
 
-    # Báo cáo tổng kết
     if history:
-        final_theta = history[-1]["theta"]
-        print("\n📊 Đang tạo báo cáo đánh giá năng lực...\n")
+        print(f"{MAGENTA}Dang tao bao cao AI...{RESET}")
         try:
-            report = ai_evaluator.evaluate_student_performance(history, final_theta)
+            report = ai_evaluator.evaluate_student_performance(history, theta)
         except Exception as e:
-            report = f"⚠️ Lỗi khi tạo báo cáo: {e}"
-
-        print("\n📘 BÁO CÁO NĂNG LỰC:\n")
-        print(report or "⚠️ Không thể tạo báo cáo.")
-
-        # Lưu kết quả
+            report = f"{RED}Loi danh gia: {e}{RESET}"
         os.makedirs("results", exist_ok=True)
-        try:
-            with open("results/evaluation_report.txt", "w", encoding="utf-8") as f:
-                f.write(report or "")
-            print("\n✅ Báo cáo đã lưu tại: results/evaluation_report.txt")
-        except Exception as e:
-            print(f"⚠️ Không thể lưu báo cáo: {e}")
+        with open("results/evaluation_report.txt", "w", encoding="utf-8") as f:
+            f.write(report or "")
+        print(f"{GREEN}Bao cao luu tai: results/evaluation_report.txt{RESET}")
+        print(f"\n{BLUE}Bao cao tong ket:{RESET}\n{report}")
     else:
-        print("⚠️ Không có dữ liệu để đánh giá.")
+        print(f"{YELLOW}Khong co du lieu danh gia.{RESET}")
 
-
-# ==============================
-# ENTRYPOINT
-# ==============================
 if __name__ == "__main__":
     run_sat_demo()

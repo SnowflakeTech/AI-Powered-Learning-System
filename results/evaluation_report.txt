@@ -1,23 +1,21 @@
-# Báo cáo Đánh giá Năng lực SAT
+# Báo cáo Năng lực SAT
 
-## 1️⃣ Tổng quan năng lực
-- **Trình độ (θ):** -0.31 cho thấy học sinh đang ở mức dưới trung bình.
-- **Độ ổn định:** Kết quả không ổn định, cần cải thiện để đạt được điểm cao hơn trong các bài thi SAT.
+## ① Tổng quan năng lực
+Năng lực cuối (θ) là -0.16, cho thấy trình độ hiện tại nằm dưới mức trung bình. Độ ổn định của năng lực còn thấp, cần cải thiện để đạt được kết quả tốt hơn trong các phần thi.
 
-## 2️⃣ Kỹ năng mạnh / yếu
-- **Kỹ năng mạnh:**
-  - **Algebra: Linear Equations:** Học sinh đã giải đúng bài toán này, cho thấy khả năng hiểu và áp dụng kiến thức về phương trình tuyến tính.
-  
-- **Kỹ năng yếu:**
-  - **Functions: Quadratic Evaluation:** Học sinh đã sai trong việc tính giá trị của hàm bậc hai, cho thấy cần cải thiện khả năng làm việc với các hàm số phức tạp hơn.
+## ② Kỹ năng mạnh / yếu
+### Kỹ năng mạnh:
+- Chưa xác định kỹ năng mạnh do kết quả hiện tại không đạt yêu cầu.
 
-## 3️⃣ Gợi ý luyện tập
-- **Ôn tập lý thuyết:** Nắm vững kiến thức về các loại hàm số, đặc biệt là hàm bậc hai.
-- **Giải bài tập:** Thực hành nhiều bài toán liên quan đến hàm số và phương trình để củng cố kỹ năng.
-- **Sử dụng tài liệu ôn tập:** Tìm kiếm sách hoặc tài liệu trực tuyến về SAT để luyện tập thêm.
-- **Tham gia nhóm học:** Học cùng bạn bè hoặc gia sư để trao đổi và giải quyết các vấn đề khó khăn.
-- **Giải đề thử:** Làm các đề thi thử để làm quen với định dạng và áp lực thời gian của SAT.
+### Kỹ năng yếu:
+- **Standard English Conventions**: Khả năng nhận diện và sử dụng ngữ pháp chính xác trong câu.
 
-## 4️⃣ Dự đoán cấp độ SAT
-- **Cấp độ:** Beginner
-- Học sinh cần cải thiện kỹ năng và kiến thức để tiến tới cấp độ Intermediate.
+## ③ Gợi ý luyện tập
+1. **Ôn tập ngữ pháp cơ bản**: Sử dụng tài liệu học tập về ngữ pháp để củng cố kiến thức nền tảng.
+2. **Làm bài tập thực hành**: Tìm kiếm các bài tập về câu hỏi ngữ pháp, đặc biệt là các câu hỏi liên quan đến "Standard English Conventions".
+3. **Tham gia nhóm học**: Tham gia vào các nhóm học tập để thảo luận và giải quyết các vấn đề ngữ pháp cùng bạn bè.
+4. **Sử dụng ứng dụng học tập**: Tận dụng các ứng dụng học SAT để luyện tập hàng ngày, tập trung vào phần ngữ pháp.
+5. **Xem video hướng dẫn**: Tìm kiếm các video giải thích về ngữ pháp và cấu trúc câu để củng cố kiến thức.
+
+## ④ Dự đoán cấp độ SAT
+**Beginner**: Cần nhiều cải thiện để đạt được kỹ năng cần thiết cho bài thi SAT.

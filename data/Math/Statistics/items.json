@@ -1,0 +1,53 @@
+[
+  {
+    "id": "2eb18c76-83a3-4218-89ad-a785a4faef10",
+    "section": "Math",
+    "skill": "Statistics",
+    "question": "In a certain data set, the mean is $50$ and the standard deviation is $10$. If each value in the data set is increased by $5$, what will be the new mean and standard deviation of the data set?",
+    "choices": [
+      "A. Mean = 55, Standard Deviation = 10",
+      "B. Mean = 50, Standard Deviation = 15",
+      "C. Mean = 55, Standard Deviation = 15",
+      "D. Mean = 55, Standard Deviation = 10"
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:01:15.335209",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "f1676631b02a"
+  },
+  {
+    "id": "bad0f12e-ac6a-41d9-bb5a-6608e5ab96e0",
+    "section": "Math",
+    "skill": "Statistics",
+    "question": "Một nhà nghiên cứu thu thập dữ liệu về số giờ học của 50 sinh viên và nhận thấy rằng độ lệch chuẩn của số giờ học là $10$. Nếu số giờ học của sinh viên được phân phối theo phân phối chuẩn và 15% sinh viên có số giờ học dưới một giá trị nhất định, thì giá trị đó là bao nhiêu nếu biết rằng trung bình số giờ học của sinh viên là $70$?",
+    "choices": [
+      "A 60",
+      "B 65",
+      "C 75",
+      "D 80"
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:01:18.917371",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "0901872f166a"
+  },
+  {
+    "id": "0f8172ec-cd70-4167-989f-73c961d55860",
+    "section": "Math",
+    "skill": "Statistics",
+    "question": "In a certain study, the average score of 50 students on a math exam was 78. After one student with a score of 90 withdrew from the study, what is the new average score of the remaining students?",
+    "choices": [
+      "A) 77",
+      "B) 78",
+      "C) 79",
+      "D) 80"
+    ],
+    "answer_index": 2,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:01:21.682387",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "2b9f5720d977"
+  }
+]

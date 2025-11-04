@@ -1,71 +1,49 @@
-"""
-sat_ai_core/question_generator.py
------------------------------------
-Sinh câu hỏi SAT tự động bằng OpenAI.
-Dùng cho module CLI: cli/generate_questions.py
-"""
-
 import os
 import json
 import uuid
 import time
 import random
+import hashlib
 import logging
+from datetime import datetime
 from typing import List, Dict, Optional
+from tqdm import tqdm
 from openai import OpenAI
 from dotenv import load_dotenv
+from sat_ai_core.api_throttler import ApiThrottler, ThrottlerError
 
-# ===== Load .env từ thư mục gốc =====
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
 
-# ===== Logging =====
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s - %(message)s")
 
-# ===== OpenAI Client =====
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
-    raise ValueError("❌ Bạn chưa thiết lập OPENAI_API_KEY trong .env!")
-client = OpenAI(api_key=api_key)
+    raise ValueError("❌ OPENAI_API_KEY chưa được cấu hình trong .env")
 
 MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+client = OpenAI(api_key=api_key)
+throttler = ApiThrottler(min_interval=2.0, max_retries=5, max_wait=25.0, per_model=True)
 
-# ===== Danh sách kỹ năng =====
 GEN_SKILLS = {
-    "Math": [
-        "Algebra",
-        "Geometry",
-        "Functions",
-        "Statistics",
-        "Ratios & Proportions",
-    ],
-    "RW": [
-        "Vocabulary",
-        "Information & Ideas",
-        "Craft & Structure",
-        "Expression of Ideas",
-        "Standard English Conventions",
-    ],
+    "Math": ["Algebra", "Geometry", "Functions", "Statistics", "Ratios & Proportions"],
+    "RW": ["Vocabulary", "Information & Ideas", "Craft & Structure", "Expression of Ideas", "Standard English Conventions"],
 }
 
-# ==========================
-# 🧠 Sinh Prompt cho AI
-# ==========================
 def make_prompt(section: str, skill: str, difficulty: str) -> str:
-    """Tạo prompt ra đề chuẩn cho từng section."""
     if section == "Math":
         return f"""
-Bạn là chuyên gia ra đề SAT Math. Hãy tạo 1 câu hỏi SAT dạng trắc nghiệm.
+Bạn là chuyên gia ra đề SAT Math. Hãy tạo 1 câu hỏi trắc nghiệm.
 
 YÊU CẦU:
 - Skill: {skill}
 - Độ khó: {difficulty}
-- Có biểu thức toán LaTeX chuẩn ($...$)
+- Có biểu thức toán LaTeX ($...$)
 - Có 4 đáp án A/B/C/D
-- Một đáp án đúng DUY NHẤT
+- Một đáp án đúng duy nhất
 - Không có lời giải
 
-Kết quả trả về phải là JSON hợp lệ:
+Kết quả trả về JSON:
 {{
   "id": "auto",
   "section": "Math",
@@ -76,8 +54,7 @@ Kết quả trả về phải là JSON hợp lệ:
   "difficulty": "{difficulty}"
 }}
 """
-    else:
-        return f"""
+    return f"""
 Bạn là chuyên gia ra đề SAT Reading & Writing.
 
 YÊU CẦU:
@@ -85,10 +62,10 @@ YÊU CẦU:
 - Độ khó: {difficulty}
 - Có 1 đoạn passage ≤ 70 từ
 - Có 4 đáp án A/B/C/D
-- Một đáp án đúng DUY NHẤT
+- Một đáp án đúng duy nhất
 - Không có lời giải
 
-Kết quả trả về phải là JSON hợp lệ:
+Kết quả trả về JSON:
 {{
   "id": "auto",
   "section": "RW",
@@ -101,76 +78,116 @@ Kết quả trả về phải là JSON hợp lệ:
 }}
 """
 
-# ==========================
-# ⚙️ Sinh 1 câu hỏi
-# ==========================
-def generate_sat_question(section: str, skill: str, difficulty: str, retries: int = 3) -> Optional[Dict]:
-    """Gọi OpenAI để sinh 1 câu hỏi SAT."""
-    prompt = make_prompt(section, skill, difficulty)
+def generate_irt_params(difficulty: str) -> Dict[str, float]:
+    d = difficulty.lower()
+    if "easy" in d:
+        a, b = random.uniform(0.8, 1.2), random.uniform(-1.5, -0.5)
+    elif "hard" in d:
+        a, b = random.uniform(1.2, 1.8), random.uniform(0.5, 1.5)
+    else:
+        a, b = random.uniform(1.0, 1.5), random.uniform(-0.5, 0.5)
+    return {"a": round(a, 2), "b": round(b, 2), "c": 0.25}
 
-    for attempt in range(1, retries + 1):
+def _try_parse_json(text: str) -> Optional[Dict]:
+    try:
+        clean = text.strip().replace("```json", "").replace("```", "")
+        return json.loads(clean)
+    except Exception:
+        fixed = text.replace("\n", " ").replace("“", "\"").replace("”", "\"")
         try:
-            response = client.chat.completions.create(
-                model=MODEL,
-                messages=[
-                    {"role": "system", "content": "You are an expert SAT question writer."},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.7,
-            )
+            return json.loads(fixed)
+        except Exception:
+            return None
 
-            raw_text = response.choices[0].message.content.strip()
-            # Làm sạch JSON
-            raw_text = raw_text.replace("```json", "").replace("```", "").strip()
-            data = json.loads(raw_text)
+def _validate_item(data: Dict) -> bool:
+    required = ["section", "skill", "question", "choices", "answer_index", "difficulty"]
+    return all(k in data for k in required)
 
-            if isinstance(data, dict):
-                data["id"] = str(uuid.uuid4())
-                logging.info(f"✅ Sinh câu hỏi mới ({section}/{skill}, độ khó={difficulty})")
-                return data
+def generate_sat_question(section: str, skill: str, difficulty: str) -> Optional[Dict]:
+    prompt = make_prompt(section, skill, difficulty)
+    try:
+        response = throttler.safe_openai_chat(
+            client,
+            messages=[
+                {"role": "system", "content": "You are an expert SAT question writer."},
+                {"role": "user", "content": prompt},
+            ],
+            model=MODEL,
+            temperature=0.7,
+        )
+        raw = response.choices[0].message.content.strip()
+        data = _try_parse_json(raw)
+        if not data or not _validate_item(data):
+            logging.warning("⚠️ JSON không hợp lệ, bỏ qua.")
+            return None
 
-        except Exception as e:
-            logging.warning(f"⚠️ Lỗi khi sinh câu hỏi (attempt {attempt}/{retries}): {e}")
-            time.sleep(1 + random.random())
+        qid = str(uuid.uuid4())
+        irt = generate_irt_params(data["difficulty"])
+        hash_id = hashlib.sha1((data["question"] + str(time.time())).encode()).hexdigest()[:12]
 
-    logging.error("❌ Không thể sinh câu hỏi sau nhiều lần thử.")
+        data.update({
+            "id": qid,
+            "created_at": datetime.now().isoformat(),
+            "model_used": MODEL,
+            "hash_id": hash_id
+        })
+        return {"item": data, "irt": {"id": qid, **irt}}
+
+    except ThrottlerError as e:
+        logging.error(f"❌ Lỗi API (retry={e.attempts}): {e.last_exception}")
+    except Exception as e:
+        logging.error(f"🚨 Lỗi không xác định: {e}")
     return None
 
-# ==========================
-# 🔁 Sinh nhiều câu hỏi
-# ==========================
-def generate_batch(section: str, skill: str, difficulty: str, n: int) -> List[Dict]:
-    """Sinh một batch gồm n câu hỏi."""
-    qs = []
-    for i in range(n):
-        q = generate_sat_question(section, skill, difficulty)
-        if q:
-            qs.append(q)
-        else:
-            logging.warning(f"⚠️ Bỏ qua câu hỏi thứ {i+1} vì lỗi sinh.")
-    return qs
+def generate_batch(section: Optional[str], skill: Optional[str], difficulty: str, n: int) -> List[Dict]:
+    if not section:
+        section = random.choice(list(GEN_SKILLS.keys()))
+    if not skill:
+        skill = random.choice(GEN_SKILLS[section])
 
-# ==========================
-# 💾 Lưu câu hỏi vào ngân hàng
-# ==========================
-def save_to_bank(new_items: List[Dict], items_path: str):
-    """Thêm câu hỏi mới vào file items.json."""
-    try:
-        with open(items_path, "r", encoding="utf-8") as f:
-            bank = json.load(f)
-    except:
-        bank = []
+    new_items, new_irt = [], []
+    with tqdm(total=n, desc=f"{section}/{skill}/{difficulty}") as bar:
+        for _ in range(n):
+            res = generate_sat_question(section, skill, difficulty)
+            if res:
+                new_items.append(res["item"])
+                new_irt.append(res["irt"])
+            bar.update(1)
+    return new_items, new_irt, section, skill
 
-    bank.extend(new_items)
+def save_to_bank(new_items: List[Dict], new_irt: List[Dict], section: str, skill: str):
+    base_dir = os.path.join("data", section, skill)
+    os.makedirs(base_dir, exist_ok=True)
+    items_path = os.path.join(base_dir, "items.json")
+    irt_path = os.path.join(base_dir, "irt_params.json")
+
+    def load_json(path): 
+        try:
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except: 
+            return []
+
+    items, irts = load_json(items_path), load_json(irt_path)
+    existing_hashes = {i.get("hash_id") for i in items}
+
+    new_unique = [i for i in new_items if i["hash_id"] not in existing_hashes]
+    irts_unique = [r for r in new_irt if r["id"] in {i["id"] for i in new_unique}]
+
+    if not new_unique:
+        logging.warning("⚠️ Không có câu hỏi mới (trùng hash).")
+        return
+
+    items.extend(new_unique)
+    irts.extend(irts_unique)
     with open(items_path, "w", encoding="utf-8") as f:
-        json.dump(bank, f, ensure_ascii=False, indent=2)
+        json.dump(items, f, ensure_ascii=False, indent=2)
+    with open(irt_path, "w", encoding="utf-8") as f:
+        json.dump(irts, f, ensure_ascii=False, indent=2)
+    logging.info(f"📦 Lưu {len(new_unique)} câu hỏi mới vào {base_dir}")
 
-    logging.info(f"📦 Đã lưu thêm {len(new_items)} câu hỏi vào {items_path}")
-
-# ==========================
-# 🧪 Test độc lập
-# ==========================
 if __name__ == "__main__":
-    print("🧪 Demo sinh 1 câu SAT (Math / Algebra / Easy)")
-    q = generate_sat_question("Math", "Algebra", "easy")
-    print(json.dumps(q, ensure_ascii=False, indent=2))
+    print("🚀 Sinh batch SAT câu hỏi tự động")
+    for diff in ["easy", "medium", "hard"]:
+        items, irts, section, skill = generate_batch(None, None, diff, 3)
+        save_to_bank(items, irts, section, skill)

@@ -1,0 +1,56 @@
+[
+  {
+    "id": "22e2b390-6d40-40bc-b3dd-38388bc228b2",
+    "section": "RW",
+    "skill": "Craft & Structure",
+    "passage": "In the quiet town of Eldridge, where whispers lingered longer than the autumn leaves, the arrival of the enigmatic traveler stirred both curiosity and suspicion among the residents. His tales, rich with adventure and peril, wove a tapestry of wonder that contrasted sharply with the town's mundane routine.",
+    "question": "What effect does the traveler’s arrival have on the town of Eldridge?",
+    "choices": [
+      "A. It disrupts the peaceful atmosphere.",
+      "B. It reinforces the town's routine.",
+      "C. It encourages residents to leave.",
+      "D. It reveals hidden secrets of the town."
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:05:50.392095",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "8fbefae270ef"
+  },
+  {
+    "id": "2441d3c3-a331-456e-b0a4-9b02defd4057",
+    "section": "RW",
+    "skill": "Craft & Structure",
+    "passage": "Trong tác phẩm của mình, tác giả sử dụng hình ảnh và phép ẩn dụ để thể hiện sự đấu tranh nội tâm của nhân vật. Những từ ngữ mạnh mẽ và nhịp điệu câu văn tạo ra một bầu không khí căng thẳng, dẫn dắt người đọc đến những cảm xúc sâu sắc mà nhân vật đang trải qua.",
+    "question": "Cách tác giả sử dụng ngôn ngữ trong đoạn văn này chủ yếu nhằm mục đích gì?",
+    "choices": [
+      "A. Tạo ra một không gian tĩnh lặng.",
+      "B. Thể hiện trạng thái tâm lý của nhân vật.",
+      "C. Khám phá lịch sử của nhân vật.",
+      "D. Mô tả cảnh vật xung quanh nhân vật."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:05:55.013682",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "b4837001e62a"
+  },
+  {
+    "id": "56f8b710-0d38-498e-b362-485d455356fa",
+    "section": "RW",
+    "skill": "Craft & Structure",
+    "passage": "Mặc dù ánh sáng mặt trời rọi sáng khắp nơi, nhưng không có gì có thể xua tan được cảm giác u ám trong căn phòng. Những bức tường màu xám và đồ đạc cũ kỹ tạo nên một không khí ngột ngạt. Âm thanh của những bước chân vọng lại từ hành lang, thỉnh thoảng làm gián đoạn sự tĩnh lặng, nhưng không đủ để làm bừng sáng tâm trạng của những người trong phòng.",
+    "question": "Câu văn nào trong đoạn văn này nhất thể hiện được cảm giác ngột ngạt của căn phòng?",
+    "choices": [
+      "A. Ánh sáng mặt trời rọi sáng khắp nơi.",
+      "B. Những bức tường màu xám và đồ đạc cũ kỹ.",
+      "C. Âm thanh của những bước chân vọng lại từ hành lang.",
+      "D. Không có gì có thể xua tan được cảm giác u ám."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:06:00.313442",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "d7ead1d9f568"
+  }
+]

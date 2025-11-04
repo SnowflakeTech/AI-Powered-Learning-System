@@ -1,58 +1,83 @@
-"""
-sat_ai_core/ai_evaluator.py
------------------------------------
-Module tổng hợp & đánh giá năng lực học sinh SAT bằng OpenAI.
-Sinh báo cáo Markdown gồm: Tổng quan – Điểm mạnh/yếu – Gợi ý luyện tập – Dự đoán Level.
-"""
-
 import os
 import time
 import logging
 import hashlib
 import sqlite3
+from datetime import datetime
 from typing import List, Dict, Any, Optional
-from openai import OpenAI
 from dotenv import load_dotenv
-from pathlib import Path
+from openai import OpenAI
+from rich.console import Console
+from rich.markdown import Markdown
+from sat_ai_core.api_throttler import ApiThrottler, ThrottlerError
 
-# ============ CẤU HÌNH CƠ BẢN ============
+PROMPT_VERSION = "v2"
+
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
+
 logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s - %(message)s")
 
 api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("❌ OPENAI_API_KEY chưa được set trong .env!")
 
-model = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+MODEL = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
 client = OpenAI(api_key=api_key)
+throttler = ApiThrottler(min_interval=2.0, max_retries=5, max_wait=25.0, per_model=True)
 
-# ============ DATABASE CACHE ============
 DB_PATH = "ai_cache.db"
+os.makedirs(os.path.dirname(DB_PATH) or ".", exist_ok=True)
 
-def _get_cache(key: str) -> Optional[str]:
-    if not os.path.exists(DB_PATH):
-        return None
+def _init_db():
     conn = sqlite3.connect(DB_PATH)
-    row = conn.execute("SELECT response FROM cache WHERE key=?", (key,)).fetchone()
-    conn.close()
-    return row[0] if row else None
-
-def _set_cache(key: str, text: str):
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute("INSERT OR REPLACE INTO cache VALUES (?, ?)", (key, text))
+    try:
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS cache (
+                key TEXT PRIMARY KEY,
+                model TEXT,
+                created_at TEXT,
+                tokens INTEGER,
+                response TEXT NOT NULL
+            );
+        """)
+    except sqlite3.OperationalError:
+        for col, definition in [
+            ("model", "TEXT DEFAULT 'unknown'"),
+            ("created_at", "TEXT DEFAULT CURRENT_TIMESTAMP"),
+            ("tokens", "INTEGER DEFAULT 0"),
+        ]:
+            try:
+                conn.execute(f"ALTER TABLE cache ADD COLUMN {col} {definition};")
+            except sqlite3.OperationalError:
+                pass
     conn.commit()
     conn.close()
 
-# ============ HÀM TIỆN ÍCH ============
+def _get_cache(key: str, model: str) -> Optional[str]:
+    conn = sqlite3.connect(DB_PATH)
+    row = conn.execute("SELECT response FROM cache WHERE key=? AND model=?", (key, model)).fetchone()
+    conn.close()
+    return row[0] if row else None
+
+def _set_cache(key: str, model: str, text: str, tokens: int):
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute(
+        "INSERT OR REPLACE INTO cache VALUES (?, ?, ?, ?, ?)",
+        (key, model, datetime.now().isoformat(), tokens, text),
+    )
+    conn.commit()
+    conn.close()
+
+_init_db()
 
 def _shorten_text(text: str, max_len: int = 120) -> str:
-    if not isinstance(text, str): return ""
+    if not isinstance(text, str):
+        return ""
     t = " ".join(text.split())
     return t if len(t) <= max_len else t[:max_len].rsplit(" ", 1)[0] + "…"
 
 def _history_summary(history: List[Dict[str, Any]]) -> str:
-    """Rút gọn lịch sử câu hỏi cho prompt AI."""
     lines = []
     for h in history:
         res = "✅ đúng" if h.get("answered_correctly") else "❌ sai"
@@ -61,59 +86,16 @@ def _history_summary(history: List[Dict[str, Any]]) -> str:
         lines.append(f"- [{res}] *{skill}*: {q}")
     return "\n".join(lines)
 
-
-# ============ GỌI OPENAI ============
-
-def _call_openai_with_retry(prompt: str, temperature: float = 0.5, retries: int = 3) -> Optional[str]:
-    """Gọi OpenAI có retry, xử lý lỗi mạng nhẹ."""
-    for attempt in range(1, retries + 1):
-        try:
-            start = time.time()
-            resp = client.chat.completions.create(
-                model=model,
-                messages=[
-                    {"role": "system", "content": "Bạn là chuyên gia giáo dục SAT. Hãy viết báo cáo đánh giá ngắn gọn, rõ ràng bằng Markdown."},
-                    {"role": "user", "content": prompt}
-                ],
-                temperature=temperature,
-            )
-            latency = time.time() - start
-            text = resp.choices[0].message.content.strip()
-            logging.info(f"✅ OpenAI success (lat={latency:.2f}s, len={len(text.split())})")
-            return text
-
-        except Exception as e:
-            wait = 2 ** attempt
-            logging.warning(f"⚠️ Retry {attempt}/{retries} sau {wait}s do lỗi: {e}")
-            time.sleep(wait)
-    return None
-
-
-# ============ HÀM CHÍNH ============
-
 def evaluate_student_performance(
     history: List[Dict[str, Any]],
     final_theta: float,
     *,
     language: str = "vi",
     temperature: float = 0.5,
+    verbose: bool = True,
 ) -> str:
-    """
-    Sinh báo cáo năng lực học sinh dựa trên lịch sử và θ cuối.
-
-    Parameters
-    ----------
-    history : list[dict]
-        Danh sách các câu hỏi đã làm cùng kết quả.
-    final_theta : float
-        Năng lực cuối (θ).
-    language : str
-        "vi" hoặc "en" để chọn ngôn ngữ.
-    """
-
     if not history:
         return "⚠️ Không có dữ liệu bài thi để đánh giá."
-
     try:
         theta = round(float(final_theta), 2)
     except Exception:
@@ -122,20 +104,20 @@ def evaluate_student_performance(
     summary = _history_summary(history)
 
     sys_vi = (
-        "Bạn là chuyên gia giáo dục SAT. Viết báo cáo Markdown gồm 4 phần:\n"
-        "1 **Tổng quan năng lực:** mô tả trình độ và độ ổn định dựa vào θ.\n"
-        "2 **Kỹ năng mạnh / yếu:** phân tích các kỹ năng học sinh làm tốt và chưa tốt.\n"
-        "3 **Gợi ý luyện tập:** đề xuất 3–5 hướng cải thiện cụ thể.\n"
-        "4 **Dự đoán cấp độ SAT:** Beginner / Intermediate / Advanced.\n"
-        "Viết ngắn gọn, rõ ràng, dùng bullet points."
+        "Bạn là chuyên gia giáo dục SAT. Viết báo cáo Markdown với 4 phần:\n"
+        "① **Tổng quan năng lực:** mô tả trình độ và độ ổn định dựa trên θ.\n"
+        "② **Kỹ năng mạnh / yếu:** liệt kê các kỹ năng tốt và yếu.\n"
+        "③ **Gợi ý luyện tập:** đề xuất 3–5 hướng cải thiện cụ thể.\n"
+        "④ **Dự đoán cấp độ SAT:** Beginner / Intermediate / Advanced.\n"
+        "Viết ngắn gọn, rõ ràng, có định dạng Markdown."
     )
 
     sys_en = (
-        "You are an SAT education expert. Write a short Markdown report with 4 sections:\n"
-        "1 Overview of ability (based on theta)\n"
-        "2 Strengths & Weaknesses\n"
-        "3 Study Recommendations (3–5 concise bullet points)\n"
-        "4 Predicted SAT Level (Beginner / Intermediate / Advanced)"
+        "You are an SAT education expert. Write a Markdown report with 4 sections:\n"
+        "① Overview of ability (based on theta)\n"
+        "② Strengths & Weaknesses\n"
+        "③ Study Recommendations (3–5 concise bullet points)\n"
+        "④ Predicted SAT Level (Beginner / Intermediate / Advanced)"
     )
 
     system_prompt = sys_vi if language == "vi" else sys_en
@@ -151,27 +133,47 @@ def evaluate_student_performance(
 {summary}
 """.strip()
 
-    # Cache key
-    key = hashlib.sha256(prompt.encode()).hexdigest()
-    cached = _get_cache(key)
+    key_src = f"{PROMPT_VERSION}::{MODEL}::{prompt}"
+    key = hashlib.sha256(key_src.encode()).hexdigest()
+    cached = _get_cache(key, MODEL)
+
+    console = Console()
     if cached:
-        print("⚡ Đã có cache báo cáo AI!\n")
-        print(cached)
+        if verbose:
+            console.print("⚡ [bold yellow]Đã có cache báo cáo AI![/bold yellow]\n")
+            console.print(Markdown(cached))
         return cached
 
-    print("\n🤖 Đang tạo báo cáo năng lực bằng OpenAI...\n")
-    report = _call_openai_with_retry(prompt, temperature=temperature)
+    console.print("\n🤖 [cyan]Đang tạo báo cáo năng lực bằng OpenAI...[/cyan]\n")
 
-    if not report:
-        return "🚨 Không thể tạo báo cáo năng lực. Vui lòng thử lại."
+    try:
+        response = throttler.safe_openai_chat(
+            client,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+            model=MODEL,
+            temperature=temperature,
+        )
 
-    _set_cache(key, report)
+        report = response.choices[0].message.content.strip()
+        token_count = len(report.split())
+        _set_cache(key, MODEL, report, token_count)
 
-    print("✅ Báo cáo hoàn tất!\n")
-    return report
+        console.print("\n✅ [green]Báo cáo hoàn tất![/green]")
+        logging.info(f"📊 Tokens ~ {token_count}\n")
+        console.print("\n📘 [bold]BÁO CÁO:[/bold]\n")
+        console.print(Markdown(report))
+        return report
 
+    except ThrottlerError as e:
+        logging.error(f"❌ API thất bại sau {e.attempts} lần retry: {e.last_exception}")
+        return f"Lỗi API: {e}"
+    except Exception as e:
+        logging.error(f"🚨 Lỗi không xác định khi gọi OpenAI: {e}")
+        return f"Lỗi không xác định: {e}"
 
-# ============ DEMO ============
 if __name__ == "__main__":
     demo_history = [
         {"question": "Nếu 3x + 5 = 20, tìm x?", "skill": "Algebra", "answered_correctly": True},
@@ -179,5 +181,3 @@ if __name__ == "__main__":
         {"question": "Một đường thẳng có hệ số góc bằng 2, đi qua (1,3)...", "skill": "Functions", "answered_correctly": True},
     ]
     report = evaluate_student_performance(demo_history, 0.85)
-    print("\n📘 BÁO CÁO MẪU:\n")
-    print(report)

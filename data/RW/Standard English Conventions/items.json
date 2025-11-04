@@ -1,0 +1,194 @@
+[
+  {
+    "id": "1ae44cab-c47c-4272-b331-1e146b2ec2a2",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "Despite the heavy rain, the event, which was scheduled for Saturday, proceeded as planned. Many attendees, who had traveled from far and wide, were determined to enjoy the festivities. However, some vendors, whose tents were not secured properly, struggled to keep their goods dry, creating a chaotic scene that tested everyone's patience.",
+    "question": "Which of the following sentences is grammatically correct?",
+    "choices": [
+      "A. Despite the rain the attendees were determined.",
+      "B. Many vendors struggled to keep their goods dry, creating a chaotic scene.",
+      "C. The event, which were scheduled for Saturday, proceeded as planned.",
+      "D. Attendees who had traveled from far and wide, were determined to enjoy the festivities."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:39:46.791679",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "8a00ab53df8a"
+  },
+  {
+    "id": "bb6ba6b5-a548-42c1-bca7-74cfbae8ec5d",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "Despite the rain, which had been pouring down for hours, the festival continued, showcasing various local artists and their crafts. Attendees, eager to support the community, donned raincoats and gathered under tents, enjoying performances that celebrated the region's rich cultural heritage.",
+    "question": "Which of the following sentences is grammatically correct within the context of the passage?",
+    "choices": [
+      "A. The festival, which was supposed to be outside, moved indoors.",
+      "B. Festival-goers was excited to see the performances.",
+      "C. The artists, whose works were displayed, were grateful.",
+      "D. Attendees enjoys the music despite the weather."
+    ],
+    "answer_index": 2,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:39:50.994826",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "9aa56a9cb62e"
+  },
+  {
+    "id": "e82ab8d8-b114-4aa1-bc66-cfca66425918",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "Despite the rain, the festival continued to attract visitors, who enjoyed the food, music, and activities. Many locals volunteered their time to help set up the event, ensuring that everything ran smoothly. Organizers expressed gratitude toward the community for their unwavering support, without which the festival would not have been possible.",
+    "question": "Which of the following sentences is grammatically correct?",
+    "choices": [
+      "A. The festival, which attracted many visitors, was a great success despite the bad weather.",
+      "B. Many local volunteers helped to setup the event, ensuring its smooth operation.",
+      "C. Organizers was grateful for the community's support, and thanked everyone involved.",
+      "D. The activities, food, and music was enjoyed by all who attended the festival."
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:39:56.917907",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "b6986d864623"
+  },
+  {
+    "id": "53062388-675c-495f-bb2d-85dd7c8f50c1",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is structured correctly?",
+    "choices": [
+      "A. The children was excited to play outside, despite the weather.",
+      "B. Several artists exhibited their work at the gallery, drawing a large crowd.",
+      "C. The manager are planning to implement new strategies next quarter.",
+      "D. Each of the participants have a unique perspective to share."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard"
+  },
+  {
+    "id": "7f5071f9-0083-4846-850b-b6b11fc0bf51",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is free of grammatical errors?",
+    "choices": [
+      "A. The team of researchers are gathering data for their study.",
+      "B. Each of the participants have completed their survey.",
+      "C. The committee meets every Thursday to discuss its findings.",
+      "D. Several students has expressed their concerns about the new policy."
+    ],
+    "answer_index": 2,
+    "difficulty": "hard"
+  },
+  {
+    "id": "fef109dc-b299-4d7c-b783-ddde08ac2253",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is correctly structured according to standard grammar rules?",
+    "choices": [
+      "A. The children, whose toys were broken, were upset.",
+      "B. The team, who practiced every day, won the championship.",
+      "C. The professor, whose lectures were insightful, inspired many students.",
+      "D. The books, that were on the shelf, were all bestsellers."
+    ],
+    "answer_index": 2,
+    "difficulty": "hard"
+  },
+  {
+    "id": "c416406c-5256-4154-906c-1df270142b82",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is grammatically correct in relation to the preceding text?",
+    "choices": [
+      "A. The committee, which have been meeting regularly, will finalize the report soon.",
+      "B. The volunteers were thanked, for their contributions were invaluable.",
+      "C. The researchers, whose findings were groundbreaking, received recognition.",
+      "D. The students, who had studied diligently, passed the exam with flying colors."
+    ],
+    "answer_index": 2,
+    "difficulty": "hard"
+  },
+  {
+    "id": "d5f23be7-3500-4d26-9365-a2b58be006c6",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is grammatically correct?",
+    "choices": [
+      "A. The teacher, who has taught for over twenty years, believes that technology enhances learning.",
+      "B. The book, which was popular among readers, have received several awards.",
+      "C. The team, who won the championship last year, are preparing for the next season.",
+      "D. The painting, which was displayed in the gallery, were created by a local artist."
+    ],
+    "answer_index": 0,
+    "difficulty": "hard"
+  },
+  {
+    "id": "10119cf1-b496-4bb4-bfd2-8c350607ceb3",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "question": "Which of the following sentences is grammatically correct?",
+    "choices": [
+      "A. The committee, which meets every Thursday, made significant progress on the new policy despite the differing opinions.",
+      "B. The teacher, who has a reputation for fairness, dismissed the student’s complaint as being irrelevant to the discussion.",
+      "C. The book, that was published last year, received rave reviews from critics and readers alike.",
+      "D. The scientist, whose research was groundbreaking, received numerous awards for her contributions to the field."
+    ],
+    "answer_index": 0,
+    "difficulty": "hard"
+  },
+  {
+    "id": "976e9c52-fecd-4c5c-ab22-eacf59599993",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "Despite the challenges faced by the community, their resilience was evident. Residents organized a series of events aimed at fostering unity and support. These gatherings not only provided resources but also created a space where individuals could share their stories and experiences, thereby strengthening their bonds amidst adversity.",
+    "question": "Which of the following is the most effective way to revise the phrase 'fostering unity and support'?",
+    "choices": [
+      "A) promoting togetherness and assistance",
+      "B) encouraging unity and help",
+      "C) developing a sense of unity and support",
+      "D) cultivating unity and supportiveness"
+    ],
+    "answer_index": 2,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:08:20.290800",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "0346a31affa5"
+  },
+  {
+    "id": "39c98973-b046-4956-9227-5364998bdbeb",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "In the midst of her busy schedule, Sarah, a dedicated student and aspiring artist, often finds herself torn between her academic responsibilities and her passion for painting. While her grades are important, the canvas calls to her, urging her to express her creativity. Balancing these two aspects of her life is a challenge she embraces, yet it leaves her questioning whether she can truly excel in both.",
+    "question": "Which of the following sentences contains an error in punctuation?",
+    "choices": [
+      "A. In the midst of her busy schedule, Sarah often finds herself torn between her responsibilities and her passion.",
+      "B. While her grades are important, the canvas calls to her urging her to express her creativity.",
+      "C. Balancing these two aspects of her life is a challenge she embraces.",
+      "D. Yet it leaves her questioning whether she can truly excel in both."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:08:24.703218",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "bcd3fb5910f6"
+  },
+  {
+    "id": "6c3e2a48-d5ce-4e67-bf12-d21a0dd1eaa9",
+    "section": "RW",
+    "skill": "Standard English Conventions",
+    "passage": "Despite the numerous challenges faced by the team, their determination and resilience allowed them to overcome obstacles. Working tirelessly, they collaborated effectively, demonstrating that teamwork is essential for success. The lessons learned during this period will undoubtedly inform their future endeavors, ensuring continued growth and improvement.",
+    "question": "Which of the following sentences contains an error in standard English conventions?",
+    "choices": [
+      "A It is essential, however, to maintain a balance.",
+      "B The team have shown great progress.",
+      "C Collaboration among team members was crucial.",
+      "D Their determination was commendable."
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:08:28.105932",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "07a12b735e7c"
+  }
+]

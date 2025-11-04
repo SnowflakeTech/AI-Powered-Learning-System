@@ -1,18 +1,11 @@
-"""
-cli/generate_questions.py
------------------------------------
-CLI tool: Sinh câu hỏi SAT tự động bằng OpenAI.
-Kết hợp với module sat_ai_core.question_generator.
-Có màu ANSI để hiển thị chuyên nghiệp trong terminal.
-"""
-
 import os
 import time
+import random
 import logging
+from tqdm import tqdm
 from dotenv import load_dotenv
 from sat_ai_core.question_generator import generate_batch, save_to_bank, GEN_SKILLS
 
-# ============ ANSI COLORS ============
 RESET = "\033[0m"
 BOLD = "\033[1m"
 GREEN = "\033[92m"
@@ -22,115 +15,104 @@ CYAN = "\033[96m"
 MAGENTA = "\033[95m"
 BLUE = "\033[94m"
 
-# ============ CẤU HÌNH ============
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+env_path = os.path.join(BASE_DIR, ".env")
+os.makedirs("logs", exist_ok=True)
 
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 load_dotenv(dotenv_path=env_path)
-
 logging.basicConfig(
     level=logging.INFO,
-    format="[%(asctime)s] %(levelname)s - %(message)s"
+    format="[%(asctime)s] %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("logs/question_gen.log", encoding="utf-8"),
+        logging.StreamHandler()
+    ]
 )
 
-# ============ HÀM CHÍNH ============
+def banner():
+    print(f"\n{BOLD}{CYAN}╔══════════════════════════════════════════════════╗{RESET}")
+    print(f"{BOLD}{CYAN}║     🚀 SAT Question Generator — PRO Edition       ║{RESET}")
+    print(f"{BOLD}{CYAN}╚══════════════════════════════════════════════════╝{RESET}\n")
 
 def run_question_generator():
-    print(f"\n{BOLD}{CYAN}🚀 SAT Question Generator (OpenAI Edition){RESET}\n")
-
-    # --- Đường dẫn file ---
-    items_path = input(f"{BLUE}📂 Đường dẫn tới file items.json (Enter = data/items.json): {RESET}").strip()
-    if items_path == "":
-        items_path = "data/items.json"
-    os.makedirs(os.path.dirname(items_path) or ".", exist_ok=True)
-
-    # --- Section ---
-    print(f"\n{MAGENTA}📘 Chọn Section:{RESET}")
+    banner()
     sections = list(GEN_SKILLS.keys())
+    print(f"{MAGENTA}📘 Chọn Section:{RESET}")
     for i, s in enumerate(sections, 1):
         print(f"  {CYAN}{i}.{RESET} {s}")
-
-    raw_section = input(f"\n👉 Chọn Section (1 hoặc 2, Enter = Math): ").strip()
-
-    if raw_section == "":
-        section = "Math"
-    elif raw_section.isdigit() and 1 <= int(raw_section) <= len(sections):
-        section = sections[int(raw_section) - 1]
-    else:
-        raw_upper = raw_section.strip().title()
-        section = raw_upper if raw_upper in sections else "Math"
-        if raw_upper not in sections:
-            print(f"{YELLOW}⚠️ Lựa chọn không hợp lệ, dùng Math làm mặc định.{RESET}")
-
+    raw_section = input(f"\n👉 Nhập số (1–2, Enter = ngẫu nhiên): ").strip()
+    section = random.choice(sections) if raw_section == "" else (
+        sections[int(raw_section) - 1] if raw_section.isdigit() and 1 <= int(raw_section) <= len(sections) else random.choice(sections)
+    )
     print(f"{GREEN}🎯 Section đã chọn:{RESET} {section}")
 
-    # --- Skill ---
     skills = GEN_SKILLS[section]
-    print(f"\n{MAGENTA}🎯 Các kỹ năng khả dụng trong {section}:{RESET}\n")
+    print(f"\n{MAGENTA}🎯 Các kỹ năng khả dụng trong {section}:{RESET}")
     for i, s in enumerate(skills, 1):
         print(f"  {CYAN}{i}.{RESET} {s}")
-
-    raw_skill = input(f"\n👉 Chọn skill (nhập số hoặc tên, Enter = ngẫu nhiên): ").strip()
-
-    if raw_skill == "":
-        import random
-        skill = random.choice(skills)
-        print(f"{BLUE}📌 Chọn ngẫu nhiên skill:{RESET} {skill}")
-    elif raw_skill.isdigit() and 1 <= int(raw_skill) <= len(skills):
-        skill = skills[int(raw_skill) - 1]
-    else:
-        raw_skill_cap = raw_skill.strip().title()
-        skill = raw_skill_cap if raw_skill_cap in skills else skills[0]
-        if raw_skill_cap not in skills:
-            print(f"{YELLOW}⚠️ Skill không hợp lệ, mặc định:{RESET} {skills[0]}")
-
+    raw_skill = input(f"\n👉 Nhập số (1–{len(skills)}, Enter = ngẫu nhiên): ").strip()
+    skill = random.choice(skills) if raw_skill == "" else (
+        skills[int(raw_skill) - 1] if raw_skill.isdigit() and 1 <= int(raw_skill) <= len(skills) else random.choice(skills)
+    )
     print(f"{GREEN}🎯 Skill đã chọn:{RESET} {skill}")
 
-    # --- Độ khó ---
-    difficulty = input(f"\n📈 Độ khó (easy / medium / hard, Enter = medium): ").strip().lower()
-    if difficulty not in ("easy", "medium", "hard"):
-        print(f"{YELLOW}⚠️ Độ khó không hợp lệ, mặc định: medium{RESET}")
-        difficulty = "medium"
+    difficulties = ["easy", "medium", "hard"]
+    print(f"\n{MAGENTA}📈 Chọn độ khó:{RESET}")
+    for i, d in enumerate(difficulties, 1):
+        print(f"  {CYAN}{i}.{RESET} {d.title()}")
+    raw_diff = input(f"\n👉 Nhập số (1–3, Enter = 2): ").strip()
+    difficulty = "medium" if raw_diff == "" else (
+        difficulties[int(raw_diff) - 1] if raw_diff.isdigit() and 1 <= int(raw_diff) <= 3 else "medium"
+    )
+    print(f"{GREEN}📊 Độ khó đã chọn:{RESET} {difficulty}")
 
-    # --- Số lượng ---
     try:
-        n = int(input(f"🔢 Số lượng câu cần tạo (Enter = 3): ").strip() or 3)
+        n = int(input(f"\n🔢 Số lượng câu cần tạo (Enter = 3): ").strip() or 3)
         if n <= 0:
             raise ValueError
     except ValueError:
-        print(f"{YELLOW}⚠️ Giá trị không hợp lệ, dùng mặc định: 3.{RESET}")
+        print(f"{YELLOW}⚠️ Giá trị không hợp lệ, mặc định: 3{RESET}")
         n = 3
 
-    # --- Xác nhận ---
     print(f"\n{BOLD}📋 Tóm tắt yêu cầu:{RESET}")
-    print(f"- Section: {section}")
-    print(f"- Skill: {skill}")
-    print(f"- Độ khó: {difficulty}")
-    print(f"- Số lượng: {n}")
+    print(f"  Section     : {section}")
+    print(f"  Skill       : {skill}")
+    print(f"  Độ khó      : {difficulty}")
+    print(f"  Số lượng    : {n}")
 
     confirm = input(f"\n✅ Xác nhận? (Enter = tiếp tục, 'q' = hủy): ").strip().lower()
     if confirm == "q":
         print(f"{RED}🛑 Hủy thao tác.{RESET}")
         return
 
-    # --- Sinh câu hỏi ---
     print(f"\n{CYAN}🤖 Đang sinh câu hỏi bằng OpenAI...{RESET}\n")
-    start_time = time.time()
-
+    start = time.time()
     try:
-        new_items = generate_batch(section, skill, difficulty, n)
+        new_items, new_irt, section, skill = generate_batch(section, skill, difficulty, n)
+        for _ in tqdm(range(10), desc=f"{BLUE}🧠 Đang xử lý dữ liệu...{RESET}", ncols=80):
+            time.sleep(0.05)
+
         if not new_items:
-            print(f"{YELLOW}⚠️ Không sinh được câu hỏi nào!{RESET}")
+            print(f"{YELLOW}⚠️ Không sinh được câu hỏi nào.{RESET}")
             return
 
-        save_to_bank(new_items, items_path)
-        duration = time.time() - start_time
-        print(f"\n{GREEN}✅ Đã sinh và lưu {len(new_items)} câu hỏi trong {duration:.1f}s.{RESET}")
-        print(f"{CYAN}📁 File lưu tại:{RESET} {items_path}\n")
+        save_to_bank(new_items, new_irt, section, skill)
+        elapsed = time.time() - start
+
+        print(f"\n{GREEN}✅ Đã sinh và lưu {len(new_items)} câu hỏi trong {elapsed:.1f}s.{RESET}")
+        print(f"{CYAN}📁 Thư mục lưu tại:{RESET} data/{section}/{skill}")
+        logging.info(f"Sinh {len(new_items)} câu hỏi {section}/{skill}/{difficulty}")
+
+        preview = new_items[0]
+        print(f"\n{BOLD}{MAGENTA}📖 Xem trước câu hỏi đầu tiên:{RESET}")
+        print(f"  🧩 {preview.get('question', 'Không có dữ liệu')}")
+        for i, ch in enumerate(preview.get('choices', []), 1):
+            print(f"   {chr(64+i)}. {ch}")
+        print(f"  ✅ Đáp án đúng: {chr(65 + preview.get('answer_index', 0))}")
 
     except Exception as e:
         print(f"{RED}🚨 Lỗi khi sinh câu hỏi:{RESET} {e}")
+        logging.exception("Lỗi khi sinh câu hỏi")
 
-
-# ============ ENTRYPOINT ============
 if __name__ == "__main__":
     run_question_generator()
