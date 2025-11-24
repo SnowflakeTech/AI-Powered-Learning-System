@@ -1,9 +1,12 @@
 import os
 import sys
+import pathlib
 from dotenv import load_dotenv
 
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-load_dotenv(dotenv_path=env_path)
+ROOT = pathlib.Path(__file__).parent   # thư mục sat_ai_core hoặc mức hiện tại
+ENV_FILE = ROOT.parent / ".env"        # nhảy lên root project
+
+load_dotenv(ENV_FILE)
 OPENAI_KEY = os.getenv("OPENAI_API_KEY")
 
 RESET = "\033[0m"

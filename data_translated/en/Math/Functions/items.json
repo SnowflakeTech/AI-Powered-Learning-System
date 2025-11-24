@@ -1,0 +1,53 @@
+[
+  {
+    "id": "364f4577-0cee-4365-be8c-8fc138b88ace",
+    "section": "Math",
+    "skill": "Functions",
+    "question": "Given the function $f(x) = 2x^2 - 4x + 1$. What is the value of $f(3) + f(-1)$?",
+    "choices": [
+      "A. 10",
+      "B. 12",
+      "C. 14",
+      "D. 16"
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:59:18.641376",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "deba9778ca87"
+  },
+  {
+    "id": "e071a999-9463-4318-9a78-bf4ca28d8d2f",
+    "section": "Math",
+    "skill": "Functions",
+    "question": "Given the function $f(x) = 2x^2 - 3x + 5$. Find the value of $x$ such that $f(x) = 0$.",
+    "choices": [
+      "A $\\frac{3 - \\sqrt{29}}{4}$",
+      "B $\\frac{3 + \\sqrt{29}}{4}$",
+      "C $\\frac{3 - \\sqrt{29}}{2}$",
+      "D $\\frac{3 + \\sqrt{29}}{2}$"
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:59:22.320799",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "9c412d6d198c"
+  },
+  {
+    "id": "6e245a30-10b4-4d06-9e26-9dfee8ac675e",
+    "section": "Math",
+    "skill": "Functions",
+    "question": "Given the function $f(x) = 2x^2 - 4x + 3$. Find the value of $x$ such that $f(x) = 5$.",
+    "choices": [
+      "A $1$",
+      "B $2$",
+      "C $3$",
+      "D $4$"
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T10:59:44.607075",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "72d172918f0b"
+  }
+]

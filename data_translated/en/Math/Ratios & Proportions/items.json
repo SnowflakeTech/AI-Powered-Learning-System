@@ -1,0 +1,53 @@
+[
+  {
+    "id": "7cf5085e-cef1-4319-8a80-ac07a76ba034",
+    "section": "Math",
+    "skill": "Ratios & Proportions",
+    "question": "In a certain recipe, the ratio of sugar to flour is $3:5$. If you want to make a larger batch of the recipe using $12$ cups of sugar, how many cups of flour will you need?",
+    "choices": [
+      "A 15",
+      "B 20",
+      "C 25",
+      "D 30"
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:02:45.000249",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "c5c48dd46bc5"
+  },
+  {
+    "id": "6bb047b3-071c-4945-a232-d391f2c8e6b5",
+    "section": "Math",
+    "skill": "Ratios & Proportions",
+    "question": "In a certain recipe, the ratio of flour to sugar is $3:2$. If a baker wants to use a total of $15$ cups of flour and sugar combined, how many cups of flour should the baker use?",
+    "choices": [
+      "A 9",
+      "B 6",
+      "C 12",
+      "D 10"
+    ],
+    "answer_index": 0,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:02:47.694577",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "1f14f10b5623"
+  },
+  {
+    "id": "00ba4444-f806-46a1-87ad-1675ed8c59f5",
+    "section": "Math",
+    "skill": "Ratios & Proportions",
+    "question": "In a certain recipe, the ratio of flour to sugar is $3:2$. If 12 cups of flour are used, how many cups of sugar are needed?",
+    "choices": [
+      "A 8",
+      "B 6",
+      "C 10",
+      "D 4"
+    ],
+    "answer_index": 1,
+    "difficulty": "hard",
+    "created_at": "2025-11-04T11:02:50.284814",
+    "model_used": "gpt-4o-mini",
+    "hash_id": "652ddbdb63ec"
+  }
+]

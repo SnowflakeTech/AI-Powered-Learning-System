@@ -8,7 +8,7 @@ from typing import List, Dict, Any
 from openai import OpenAI
 from dotenv import load_dotenv
 from sat_ai_core.api_throttler import ApiThrottler
-from sat_ai_core.question_generator import generate_irt_params
+from sat_ai_core.sat_full_bank_generator import generate_irt_params
 
 # ===== Config =====
 env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")

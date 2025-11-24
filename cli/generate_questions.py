@@ -4,7 +4,7 @@ import random
 import logging
 from tqdm import tqdm
 from dotenv import load_dotenv
-from sat_ai_core.question_generator import generate_batch, save_to_bank, GEN_SKILLS
+from sat_ai_core.sat_full_bank_generator import generate_batch, save_to_bank, GEN_SKILLS
 
 RESET = "\033[0m"
 BOLD = "\033[1m"
